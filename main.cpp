@@ -27,5 +27,6 @@ int main(int argc, char* argv[]) {
   } catch (InterpreteurException & e) {
     cout << e.what() << endl;
   }
+  cout << flush;
   return 0;
 }

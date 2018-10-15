@@ -56,7 +56,7 @@ Noeud* Interpreteur::seqInst() {
   NoeudSeqInst* sequence = new NoeudSeqInst();
   do {
     sequence->ajoute(inst());
-  } while (m_lecteur.getSymbole() == "<VARIABLE>" || m_lecteur.getSymbole() == "si");
+  } while (m_lecteur.getSymbole() == "<VARIABLE>" || m_lecteur.getSymbole() == "si" || m_lecteur.getSymbole() == "tantque" || m_lecteur.getSymbole() == "sinonsi" || m_lecteur.getSymbole() == "sinon" );
   // Tant que le symbole courant est un début possible d'instruction...
   // Il faut compléter cette condition chaque fois qu'on rajoute une nouvelle instruction
   return sequence;
@@ -69,9 +69,9 @@ Noeud* Interpreteur::inst() {
     testerEtAvancer(";");
     return affect;
   }
-  else if (m_lecteur.getSymbole() == "si")
-    return instSi();
+  else if (m_lecteur.getSymbole() == "si")return instSiRiche();
   // Compléter les alternatives chaque fois qu'on rajoute une nouvelle instruction
+  else if(m_lecteur.getSymbole() == "tantque")return instTantQue();
   else erreur("Instruction incorrecte");
 }
 
@@ -136,4 +136,46 @@ Noeud* Interpreteur::instSi() {
   testerEtAvancer("finsi");
   return new NoeudInstSi(condition, sequence); // Et on renvoie un noeud Instruction Si
 }
+
+Noeud* Interpreteur::instTantQue() {
+    //<instTantQue> ::=tantque( <expression> )<seqInst> fintantque
+    testerEtAvancer("tantque");
+    testerEtAvancer("(");
+    Noeud* condition = expression(); // On mémorise la condition
+    testerEtAvancer(")");
+    Noeud* sequence = seqInst(); // On mémorise la séquence d'instruction
+    testerEtAvancer("fintantque");
+    return new NoeudInstTantQue(condition,sequence);
+    
+}
+
+Noeud* Interpreteur::instSiRiche() {
+    vector<Noeud*> conditions;
+    vector<Noeud*> sequences;
+    
+    //si(<expression>) <seqInst> {sinonsi (<expression>) <seqInst>} [sinon <seqInst>] finsi
+    testerEtAvancer("si");
+    testerEtAvancer("(");
+    conditions.push_back(expression());
+    testerEtAvancer(")");
+    sequences.push_back(seqInst());     // On mémorise la séquence d'instruction
+    while(m_lecteur.getSymbole() == "sinonsi"){
+        m_lecteur.avancer();
+        testerEtAvancer("(");
+        conditions.push_back(expression());
+        testerEtAvancer(")");
+        sequences.push_back(seqInst());
+    }
+    if(m_lecteur.getSymbole() == "sinon"){
+        m_lecteur.avancer();
+        testerEtAvancer("(");
+        conditions.push_back(expression());
+        testerEtAvancer(")");
+        sequences.push_back(seqInst());
+    }
+    testerEtAvancer("finsi");
+    return nullptr;
+}
+
+
 

@@ -77,8 +77,26 @@ class NoeudInstSi : public Noeud {
     int executer();  // Exécute l'instruction si : si condition vraie on exécute la séquence
 
   private:
-    Noeud*  m_condition;
-    Noeud*  m_sequence;
+    Noeud* m_condition;
+    Noeud* m_sequence;
 };
 
+////////////////////////////////////////////////////////////////////////////////
+class NoeudInstTantQue : public Noeud{
+    // "tantque"
+    public:
+        NoeudInstTantQue(Noeud* condition, Noeud* sequence);
+        ~NoeudInstTantQue(){}
+        int executer();
+        
+    private:
+        Noeud* m_condition;
+        Noeud* m_sequence;
+};
+////////////////////////////////////////////////////////////////////////////////
+class NoeudInstSiRiche : public Noeud{
+    //"si" "sinonsi" "sinon"
+public:
+    N
+};
 #endif /* ARBREABSTRAIT_H */
