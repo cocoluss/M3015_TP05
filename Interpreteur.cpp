@@ -1,6 +1,9 @@
 #include "Interpreteur.h"
 #include <stdlib.h>
 #include <iostream>
+#include <vector>
+#include <typeinfo>
+
 using namespace std;
 
 Interpreteur::Interpreteur(ifstream & fichier) :
@@ -56,7 +59,7 @@ Noeud* Interpreteur::seqInst() {
   NoeudSeqInst* sequence = new NoeudSeqInst();
   do {
     sequence->ajoute(inst());
-  } while (m_lecteur.getSymbole() == "<VARIABLE>" || m_lecteur.getSymbole() == "si" || m_lecteur.getSymbole() == "tantque");
+  } while (m_lecteur.getSymbole() == "<VARIABLE>" || m_lecteur.getSymbole() == "si" || m_lecteur.getSymbole() == "tantque" || m_lecteur.getSymbole() == "repeter" || m_lecteur.getSymbole() == "pour" || m_lecteur.getSymbole() == "ecrire" || m_lecteur.getSymbole() == "lire");
   // Tant que le symbole courant est un début possible d'instruction...
   // Il faut compléter cette condition chaque fois qu'on rajoute une nouvelle instruction
   return sequence;
@@ -72,6 +75,11 @@ Noeud* Interpreteur::inst() {
   else if (m_lecteur.getSymbole() == "si")return instSiRiche();
   // Compléter les alternatives chaque fois qu'on rajoute une nouvelle instruction
   else if(m_lecteur.getSymbole() == "tantque")return instTantQue();
+  else if(m_lecteur.getSymbole() == "repeter")return instRepeter();
+  else if(m_lecteur.getSymbole() == "pour")return instPour();  
+  else if(m_lecteur.getSymbole() == "ecrire")return instPour();
+  else if(m_lecteur.getSymbole() == "lire")return instPour();
+
   else erreur("Instruction incorrecte");
 }
 
@@ -185,6 +193,38 @@ Noeud* Interpreteur::instRepeter() {
     return new NoeudInstRepeter(condition,sequence);
 }
 
+Noeud* Interpreteur::instPour() {
+    //<instPour> ::= pour ( [ <affectation ] ; <expression> ; [ <affectation> ] ) <seqInst> finpour
+    Noeud* affectation1 = nullptr;
+    Noeud* affectation2 = nullptr;
+    
+    testerEtAvancer("pour");
+    testerEtAvancer("(");
+    if (m_lecteur.getSymbole() != ";") {
+        affectation1 = affectation();
+    }
+    testerEtAvancer(";");
+    Noeud* condition = expression(); // On mémorise la condition
+    testerEtAvancer(";");
+    if (m_lecteur.getSymbole() != ")") {
+        affectation2 = affectation();
+    }
+    testerEtAvancer(")"); 
+    Noeud* sequence = seqInst();
+    testerEtAvancer("finpour"); 
+    return new NoeudInstPour(condition,sequence,affectation1,affectation2);
+}
 
+Noeud* Interpreteur::instEcrire() {
+    //<instEcrire> ::= ecrire ( <expression> | <chaine> { , <expression> | <chaine> } )
+    vector<string> chaines;
+    vector<Noeud> expression;
+    
+    testerEtAvancer("ecrire");
+    testerEtAvancer("(");
+        
+    if ( (typeid(*m_lecteur.getSymbole())==typeid(SymboleValue) && *((SymboleValue*)m_lecteur.getSymbole())== "<CHAINE>" )
+        
+}
 
 

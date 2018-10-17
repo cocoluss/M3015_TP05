@@ -125,3 +125,44 @@ int NoeudInstSiRiche::executer() {
 NoeudInstRepeter::NoeudInstRepeter(Noeud* condition, Noeud* sequence)
 : m_condition(condition), m_sequence(sequence){
 }
+
+int NoeudInstRepeter::executer() {
+    do {
+        m_sequence->executer();
+    } while (m_condition->executer());
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// NoeudInstPour
+////////////////////////////////////////////////////////////////////////////////
+
+NoeudInstPour::NoeudInstPour(Noeud* condition, Noeud* sequence, Noeud* affection1, Noeud* affection2)
+: m_condition(condition), m_sequence(sequence), m_affectation1(affection1), m_affectation2(affection2){
+}
+
+int NoeudInstPour::executer() {
+    if (m_affectation1 == nullptr && m_affectation2 == nullptr) {
+        for(;m_condition->executer();){
+            m_sequence->executer();
+        }
+    }
+    else if (m_affectation1 != nullptr && m_affectation2 == nullptr) {
+        for(m_affectation1->executer(); m_condition->executer();){
+            m_sequence->executer();
+        }
+    }
+    
+    else if (m_affectation1 == nullptr && m_affectation2 != nullptr) {
+        for(;m_condition->executer(); m_affectation2->executer()){
+            m_sequence->executer();
+        }
+    }
+    else {
+        for(m_affectation1->executer(); m_condition->executer(); m_affectation2->executer()){
+            m_sequence->executer();
+        }
+    }
+} 
+
+
+
