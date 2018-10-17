@@ -2,7 +2,6 @@
 #include <stdlib.h>
 #include <iostream>
 #include <vector>
-#include <typeinfo>
 
 using namespace std;
 
@@ -217,14 +216,40 @@ Noeud* Interpreteur::instPour() {
 
 Noeud* Interpreteur::instEcrire() {
     //<instEcrire> ::= ecrire ( <expression> | <chaine> { , <expression> | <chaine> } )
-    vector<string> chaines;
-    vector<Noeud> expression;
+    vector<Noeud*> elements;
+//    
+//    testerEtAvancer("ecrire");
+//    testerEtAvancer("(");
+//    
+//    do {
+//        if (m_lecteur.getSymbole() == ",") {
+//            m_lecteur.avancer();
+//        }
+//
+//        if((typeid(*m_lecteur.getSymbole())==typeid(SymboleValue) && *((SymboleValue*)m_lecteur.getSymbole())== "<CHAINE>" )){
+//            chaines.push_back(m_lecteur.getSymbole());
+//            m_lecteur.avancer();
+//        }
+//        else {
+//            expressions.push_back(expression());
+//        }
+//    }while(m_lecteur.getSymbole() == ",");   
+//    
+//    testerEtAvancer(")");      
+//    return new NoeudInstEcrire(chaines,expressions);
     
     testerEtAvancer("ecrire");
     testerEtAvancer("(");
-        
-    if ( (typeid(*m_lecteur.getSymbole())==typeid(SymboleValue) && *((SymboleValue*)m_lecteur.getSymbole())== "<CHAINE>" )
-        
+    do{
+        if (m_lecteur.getSymbole() == ",") {
+            m_lecteur.avancer();
+        }
+        if(m_lecteur->getSymbole() == "<CHAINE>"){
+            elements.push_back(m_table.chercheAjoute(m_lecteur.getSymbole()));
+        }else{
+            elements.push_back(expression());
+        }
+    }while(m_lecteur.getSymbole() == ",")
 }
 
 

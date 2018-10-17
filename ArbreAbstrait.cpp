@@ -164,5 +164,14 @@ int NoeudInstPour::executer() {
     }
 } 
 
+////////////////////////////////////////////////////////////////////////////////
+// NoeudInstEcrire
+////////////////////////////////////////////////////////////////////////////////
+
+NoeudInstEcrire::NoeudInstEcrire(vector<SymboleValue*> chaines, vector<Noeud*> expressions)
+: m_chaines(chaines), m_expressions(expressions){
+}
+
+
 
 
