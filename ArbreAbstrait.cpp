@@ -101,3 +101,27 @@ int NoeudInstTantQue::executer() {
 // NoeudInstSiRiche
 ////////////////////////////////////////////////////////////////////////////////
 
+NoeudInstSiRiche::NoeudInstSiRiche(vector<Noeud*> conditions, vector<Noeud*> sequences)
+: m_conditions(conditions), m_sequences(sequences) {
+}
+
+int NoeudInstSiRiche::executer() {
+    bool checkExe = false;
+    for(int i = 0; i < m_conditions.size(); i++){
+        if(m_conditions[i]->executer() && !checkExe){
+            checkExe = true;
+            m_sequences[i]->executer();
+        }
+    }
+    if(m_conditions.size() != m_sequences.size() && !checkExe){ 
+        m_sequences[m_sequences.size()-1]->executer();
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// NoeudInstRepeter
+////////////////////////////////////////////////////////////////////////////////
+
+NoeudInstRepeter::NoeudInstRepeter(Noeud* condition, Noeud* sequence)
+: m_condition(condition), m_sequence(sequence){
+}

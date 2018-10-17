@@ -96,7 +96,27 @@ class NoeudInstTantQue : public Noeud{
 ////////////////////////////////////////////////////////////////////////////////
 class NoeudInstSiRiche : public Noeud{
     //"si" "sinonsi" "sinon"
-public:
-    N
+    public:
+        NoeudInstSiRiche(vector<Noeud*> conditions, vector<Noeud*> sequences);
+        ~NoeudInstSiRiche(){}
+        int executer();
+    private:
+        vector<Noeud*> m_conditions;
+        vector<Noeud*> m_sequences;
+    
 };
+
+////////////////////////////////////////////////////////////////////////////////
+class NoeudInstRepeter : public Noeud{
+    // "repeter" "jusqua"
+    public:
+        NoeudInstRepeter(Noeud* condition, Noeud* sequence);
+        ~NoeudInstRepeter(){}
+        int executer();
+        
+    private:
+        Noeud* m_condition;
+        Noeud* m_sequence;
+};
+
 #endif /* ARBREABSTRAIT_H */

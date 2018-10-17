@@ -30,7 +30,7 @@ void Interpreteur::testerEtAvancer(const string & symboleAttendu) throw (Syntaxe
 }
 
 void Interpreteur::erreur(const string & message) const throw (SyntaxeException) {
-  // Lève une exception contenant le message et le symbole courant trouvé
+  // Lève une exception contenant le message et le symbole courant trouvé.
   // Utilisé lorsqu'il y a plusieurs symboles attendus possibles...
   static char messageWhat[256];
   sprintf(messageWhat,
@@ -56,7 +56,7 @@ Noeud* Interpreteur::seqInst() {
   NoeudSeqInst* sequence = new NoeudSeqInst();
   do {
     sequence->ajoute(inst());
-  } while (m_lecteur.getSymbole() == "<VARIABLE>" || m_lecteur.getSymbole() == "si" || m_lecteur.getSymbole() == "tantque" || m_lecteur.getSymbole() == "sinonsi" || m_lecteur.getSymbole() == "sinon" );
+  } while (m_lecteur.getSymbole() == "<VARIABLE>" || m_lecteur.getSymbole() == "si" || m_lecteur.getSymbole() == "tantque");
   // Tant que le symbole courant est un début possible d'instruction...
   // Il faut compléter cette condition chaque fois qu'on rajoute une nouvelle instruction
   return sequence;
@@ -168,13 +168,21 @@ Noeud* Interpreteur::instSiRiche() {
     }
     if(m_lecteur.getSymbole() == "sinon"){
         m_lecteur.avancer();
-        testerEtAvancer("(");
-        conditions.push_back(expression());
-        testerEtAvancer(")");
         sequences.push_back(seqInst());
     }
     testerEtAvancer("finsi");
-    return nullptr;
+    return new NoeudInstSiRiche(conditions,sequences);
+}
+
+Noeud* Interpreteur::instRepeter() {
+    //<instRepeter> ::= repeter <seqInst> jusqua (<expression>)
+    testerEtAvancer("repeter");
+    Noeud* sequence = seqInst(); // On mémorise la séquence d'instruction
+    testerEtAvancer("jusqua");
+    testerEtAvancer("("); 
+    Noeud* condition = expression(); // On mémorise la condition
+    testerEtAvancer(")"); 
+    return new NoeudInstRepeter(condition,sequence);
 }
 
 

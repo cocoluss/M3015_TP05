@@ -1,13 +1,13 @@
 # Fichier de test
 # Les lignes de commentaires commencent par #
 procedure principale()
-  i = 12+3;
-  si (i>13)
+  i = 12+4;
+  j=5;
+  si(i>17)
     j=1;
+  sinonsi(i>15)
+    j=2;
+  sinon j=3;
   finsi
-  tantque(i<16)
-    j= j +1;
-    i = i + 2;
-  fintantque
 finproc
 # Commentaire Final
