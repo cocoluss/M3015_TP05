@@ -1,4 +1,5 @@
 #include <stdlib.h>
+#include <typeinfo>
 #include "ArbreAbstrait.h"
 #include "Symbole.h"
 #include "SymboleValue.h"
@@ -168,9 +169,47 @@ int NoeudInstPour::executer() {
 // NoeudInstEcrire
 ////////////////////////////////////////////////////////////////////////////////
 
-NoeudInstEcrire::NoeudInstEcrire(vector<SymboleValue*> chaines, vector<Noeud*> expressions)
-: m_chaines(chaines), m_expressions(expressions){
+NoeudInstEcrire::NoeudInstEcrire(vector<Noeud*> elements) 
+: m_elems(elements){
 }
+
+int NoeudInstEcrire::executer() {
+    Noeud* e;
+    string s;
+    for(auto e : m_elems){
+        if(typeid(*e)==typeid(SymboleValue) && *((SymboleValue*)e)== "<CHAINE>"){
+            s = ((SymboleValue*)e)->getChaine();
+            s.erase(s.size()-1,1);
+            s.erase(0,1);
+            cout << s;
+        }
+        else{
+            cout << e->executer();
+        }
+    }
+    cout << endl;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// NoeudInstLire
+////////////////////////////////////////////////////////////////////////////////
+
+NoeudInstLire::NoeudInstLire(vector<Noeud*> variables)
+: m_vars(variables){
+}
+
+int NoeudInstLire::executer() {
+    Noeud* var;
+    int n;
+    for(auto var : m_vars){
+        cin >> n;
+        ((SymboleValue*)var)->setValeur(n);
+    }
+}
+
+
+
+
 
 
 

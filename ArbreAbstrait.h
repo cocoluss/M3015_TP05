@@ -11,7 +11,6 @@ using namespace std;
 
 #include "Symbole.h"
 #include "Exceptions.h"
-#include "SymboleValue.h"
 
 ////////////////////////////////////////////////////////////////////////////////
 class Noeud {
@@ -134,17 +133,27 @@ class NoeudInstPour : public Noeud{
         Noeud* m_affectation1;
         Noeud* m_affectation2;
 };
+
 ////////////////////////////////////////////////////////////////////////////////
 class NoeudInstEcrire : public Noeud{
-    //"si" "sinonsi" "sinon"
-    public:
-        NoeudInstEcrire(vector<SymboleValue*> chaines, vector<Noeud*> expressions);
-        ~NoeudInstEcrire(){}
+    //"ecrire"
+    public :
+        NoeudInstEcrire(vector<Noeud*> elements);
+        ~NoeudInstEcrire() {}
         int executer();
     private:
-        vector<SymboleValue*> m_chaines;
-        vector<Noeud*> m_expressions;
-    
+        vector<Noeud*> m_elems;
+};
+
+////////////////////////////////////////////////////////////////////////////////
+class NoeudInstLire : public Noeud{
+    //"lire"
+    public :
+        NoeudInstLire(vector<Noeud*> variables);
+        ~NoeudInstLire() {}
+        int executer();
+    private:
+        vector<Noeud*> m_vars;
 };
 
 #endif /* ARBREABSTRAIT_H */
