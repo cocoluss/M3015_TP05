@@ -3,10 +3,12 @@
 #include <iostream>
 #include <vector>
 
+#define TRY(X) try{X}catch(SyntaxeException e){cout << e.what() <<endl;m_comptErr++;}
+
 using namespace std;
 
 Interpreteur::Interpreteur(ifstream & fichier) :
-m_lecteur(fichier), m_table(), m_arbre(nullptr) {
+m_lecteur(fichier), m_table(), m_arbre(nullptr), m_comptErr(0){
 }
 
 void Interpreteur::analyse() {
@@ -50,15 +52,19 @@ Noeud* Interpreteur::programme() {
   Noeud* sequence = seqInst();
   testerEtAvancer("finproc");
   tester("<FINDEFICHIER>");
+  if(m_comptErr > 0){
+      cout << "Nombre d'erreur trouvé : "<< m_comptErr << endl;
+      return nullptr;
+  }
   return sequence;
 }
 
 Noeud* Interpreteur::seqInst() {
   // <seqInst> ::= <inst> { <inst> }
   NoeudSeqInst* sequence = new NoeudSeqInst();
-  do {
-    sequence->ajoute(inst());
-  } while (m_lecteur.getSymbole() == "<VARIABLE>" || m_lecteur.getSymbole() == "si" || m_lecteur.getSymbole() == "tantque" || m_lecteur.getSymbole() == "repeter" || m_lecteur.getSymbole() == "pour" || m_lecteur.getSymbole() == "ecrire" || m_lecteur.getSymbole() == "lire");
+      do {
+        sequence->ajoute(inst());
+      } while (m_lecteur.getSymbole() == "<VARIABLE>" || m_lecteur.getSymbole() == "si" || m_lecteur.getSymbole() == "tantque" || m_lecteur.getSymbole() == "repeter" || m_lecteur.getSymbole() == "pour" || m_lecteur.getSymbole() == "ecrire" || m_lecteur.getSymbole() == "lire");
   // Tant que le symbole courant est un début possible d'instruction...
   // Il faut compléter cette condition chaque fois qu'on rajoute une nouvelle instruction
   return sequence;
@@ -81,6 +87,7 @@ Noeud* Interpreteur::inst() {
 
   else erreur("Instruction incorrecte");
 }
+
 
 Noeud* Interpreteur::affectation() {
   // <affectation> ::= <variable> = <expression> 
@@ -135,32 +142,30 @@ Noeud* Interpreteur::facteur() {
 
 Noeud* Interpreteur::instSi() {
   // <instSi> ::= si ( <expression> ) <seqInst> finsi
-  testerEtAvancer("si");
-  testerEtAvancer("(");
-  Noeud* condition = expression(); // On mémorise la condition
-  testerEtAvancer(")");
-  Noeud* sequence = seqInst();     // On mémorise la séquence d'instruction
-  testerEtAvancer("finsi");
-  return new NoeudInstSi(condition, sequence); // Et on renvoie un noeud Instruction Si
+    Noeud* condition;
+    Noeud* sequence;
+            
+    TRY(testerEtAvancer("si");)
+    TRY(testerEtAvancer("(");)
+    TRY(condition = expression();) // On mémorise la condition
+    TRY(testerEtAvancer(")");)
+    sequence = seqInst();     // On mémorise la séquence d'instruction
+    TRY(testerEtAvancer("finsi");)
+    return new NoeudInstSi(condition, sequence); // Et on renvoie un noeud Instruction Si
 }
 
 Noeud* Interpreteur::instTantQue() {
     //<instTantQue> ::=tantque( <expression> )<seqInst> fintantque
     Noeud* condition;
-    try{
-        testerEtAvancer("tantque");
-        testerEtAvancer("(");
-        condition = expression(); // On mémorise la condition        
-        testerEtAvancer(")");
-        Noeud* sequence = seqInst(); // On mémorise la séquence d'instruction
-        testerEtAvancer("fintantque");
-        return new NoeudInstTantQue(condition,sequence);
-    }catch(SyntaxeException e){
-        cout << e.what() <<endl;
-        m_lecteur.avancer();
-        return nullptr;
-    }
+    Noeud* sequence;
     
+    TRY(testerEtAvancer("tantque");)
+    TRY(testerEtAvancer("(");)
+    TRY(condition = expression();)
+    TRY(testerEtAvancer(")");)
+    sequence = seqInst(); // On mémorise la séquence d'instruction
+    TRY(testerEtAvancer("fintantque");)
+    return new NoeudInstTantQue(condition,sequence);
 }
 
 Noeud* Interpreteur::instSiRiche() {
@@ -168,34 +173,43 @@ Noeud* Interpreteur::instSiRiche() {
     vector<Noeud*> sequences;
     
     //si(<expression>) <seqInst> {sinonsi (<expression>) <seqInst>} [sinon <seqInst>] finsi
-    testerEtAvancer("si");
-    testerEtAvancer("(");
-    conditions.push_back(expression());
-    testerEtAvancer(")");
+    TRY(testerEtAvancer("si");)
+    TRY(testerEtAvancer("(");)
+    TRY(conditions.push_back(expression());)
+    TRY(testerEtAvancer(")");)
     sequences.push_back(seqInst());     // On mémorise la séquence d'instruction
     while(m_lecteur.getSymbole() == "sinonsi"){
         m_lecteur.avancer();
-        testerEtAvancer("(");
-        conditions.push_back(expression());
-        testerEtAvancer(")");
+        TRY(testerEtAvancer("(");)
+        TRY(conditions.push_back(expression());)
+        TRY(testerEtAvancer(")");)
         sequences.push_back(seqInst());
     }
     if(m_lecteur.getSymbole() == "sinon"){
-        m_lecteur.avancer();
+        TRY(m_lecteur.avancer();)
         sequences.push_back(seqInst());
+    }else if(m_lecteur.getSymbole() != "finsi"){
+        try{            
+            erreur("oui");
+        }
+        catch(SyntaxeException e){
+            cout << e.what() <<endl;m_comptErr++; m_lecteur.avancer();
+        }
     }
-    testerEtAvancer("finsi");
+    TRY(testerEtAvancer("finsi");)
     return new NoeudInstSiRiche(conditions,sequences);
 }
 
 Noeud* Interpreteur::instRepeter() {
     //<instRepeter> ::= repeter <seqInst> jusqua (<expression>)
-    testerEtAvancer("repeter");
-    Noeud* sequence = seqInst(); // On mémorise la séquence d'instruction
-    testerEtAvancer("jusqua");
-    testerEtAvancer("("); 
-    Noeud* condition = expression(); // On mémorise la condition
-    testerEtAvancer(")"); 
+    Noeud* condition;
+    Noeud* sequence;
+    TRY(testerEtAvancer("repeter");)
+    sequence = seqInst(); // On mémorise la séquence d'instruction
+    TRY(testerEtAvancer("jusqua");)
+    TRY(testerEtAvancer("(");)
+    TRY(condition = expression();)
+    TRY(testerEtAvancer(")");)
     return new NoeudInstRepeter(condition,sequence);
 }
 
@@ -203,29 +217,31 @@ Noeud* Interpreteur::instPour() {
     //<instPour> ::= pour ( [ <affectation ] ; <expression> ; [ <affectation> ] ) <seqInst> finpour
     Noeud* affectation1 = nullptr;
     Noeud* affectation2 = nullptr;
-    
-    testerEtAvancer("pour");
-    testerEtAvancer("(");
+    Noeud* condition;
+    Noeud* sequence;
+    TRY(testerEtAvancer("pour");)
+    TRY(testerEtAvancer("(");)
     if (m_lecteur.getSymbole() != ";") {
-        affectation1 = affectation();
+        TRY(affectation1 = affectation();)
     }
-    testerEtAvancer(";");
-    Noeud* condition = expression(); // On mémorise la condition
-    testerEtAvancer(";");
+    TRY(testerEtAvancer(";");)
+    TRY(condition = expression();)
+    TRY(testerEtAvancer(";");)
     if (m_lecteur.getSymbole() != ")") {
-        affectation2 = affectation();
+        TRY(affectation2 = affectation();)
     }
-    testerEtAvancer(")"); 
-    Noeud* sequence = seqInst();
-    testerEtAvancer("finpour"); 
+    TRY(testerEtAvancer(")");)
+    sequence = seqInst();
+    TRY(testerEtAvancer("finpour");)    
     return new NoeudInstPour(condition,sequence,affectation1,affectation2);
 }
 
 Noeud* Interpreteur::instEcrire() {
     //<instEcrire> ::= ecrire ( <expression> | <chaine> { , <expression> | <chaine> } )
     vector<Noeud*> elements;
-    testerEtAvancer("ecrire");
-    testerEtAvancer("(");
+    
+    TRY(testerEtAvancer("ecrire");)
+    TRY(testerEtAvancer("(");)
     do{
         if (m_lecteur.getSymbole() == ",") {
             m_lecteur.avancer();
@@ -234,30 +250,30 @@ Noeud* Interpreteur::instEcrire() {
             elements.push_back(m_table.chercheAjoute(m_lecteur.getSymbole()));
             m_lecteur.avancer();
         }else{
-            elements.push_back(expression());
+            TRY(elements.push_back(expression());)
         }
     }while(m_lecteur.getSymbole() == ",");
-    testerEtAvancer(")");   
+    TRY(testerEtAvancer(")");)
     return new NoeudInstEcrire(elements);
 }
 
 Noeud* Interpreteur::instLire() {
   //<instLire> ::= lire(<variable>{,<variable>})
     vector<Noeud*> variables;
-    testerEtAvancer("lire");
-    testerEtAvancer("(");
+    TRY(testerEtAvancer("lire");)
+    TRY(testerEtAvancer("(");)
     do{
        if (m_lecteur.getSymbole() == ",") {
             m_lecteur.avancer();
         } 
        if(m_lecteur.getSymbole() == "<VARIABLE>"){
-           variables.push_back(expression());
+           TRY(variables.push_back(expression());)
        }
        else{
            throw SyntaxeException("Pas de variable");
        }
     }while(m_lecteur.getSymbole() == ",");
-    testerEtAvancer(")");  
+    TRY(testerEtAvancer(")");)  
     return new NoeudInstLire(variables);
 }
 
