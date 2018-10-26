@@ -23,8 +23,12 @@ void NoeudSeqInst::ajoute(Noeud* instruction) {
 }
 
 void NoeudSeqInst::traduitEnPHP(ostream& cout, unsigned int indentation) const {
-    for (unsigned int i = 0; i < m_instructions.size(); i++)
-    m_instructions[i]->traduitEnPHP(cout,indentation+1);
+    for (unsigned int i = 0; i < m_instructions.size(); i++){
+        m_instructions[i]->traduitEnPHP(cout,indentation+1);
+        if(typeid(*m_instructions[i]) != typeid(NoeudInstTantQue)){    
+            cout << ";" << endl;
+        }
+    }
 }
 
 
@@ -43,9 +47,9 @@ int NoeudAffectation::executer() {
 }
 
 void NoeudAffectation::traduitEnPHP(ostream& cout, unsigned int indentation) const {
-    cout << "$" << ((SymboleValue*)m_variable)->getChaine() << " = " ;
-    m_expression->traduitEnPHP(cout, 0);
-    cout << ";" << endl;
+    cout<< setw(2*indentation) << "$" << ((SymboleValue*)m_variable)->getChaine() << " = " ;
+    m_expression->traduitEnPHP(cout,0);
+//    cout << ";" << endl;
 }
 
 
@@ -82,45 +86,49 @@ int NoeudOperateurBinaire::executer() {
 }
 
 void NoeudOperateurBinaire::traduitEnPHP(ostream& cout, unsigned int indentation) const {
-    string op1;
-    string op2;
+    string op1 = "";
+    string op2 = "";
+    string oper;
+    //operante gauche
+    if(*((SymboleValue*)m_operandeGauche) == "<VARIABLE>"){
+        op1 = "$" ;
+        ((SymboleValue*)m_operandeGauche)->traduitEnPHP(cout,0);
+    }else if(*((SymboleValue*)m_operandeGauche) == "<CHAINE>"){
+        op1 = ((SymboleValue*)m_operandeGauche)->getChaine();
+        op1.erase(op1.size()-1,1);
+        op1.erase(0,1);
+        op1 = "$" + op1;
+    }else if(*((SymboleValue*)m_operandeGauche) == "<ENTIER>"){
+        op1 = ((SymboleValue*)m_operandeGauche)->getChaine();
+    }else if(((SymboleValue*)m_operandeGauche) == nullptr){
+        op1 = "";
+    }else{
+        ((SymboleValue*)m_operandeGauche)->traduitEnPHP(cout,0);
+    }
+    cout << op1;
+    //operateur
+    if (this->m_operateur == "et") oper = "&&";
+    else if (this->m_operateur == "ou") oper = "||";
+    else if (this->m_operateur == "non") oper = "!";
+    else oper = this->m_operateur.getChaine();
+    cout << oper;
+    //operante droite
+    if(*((SymboleValue*)m_operandeDroit) == "<VARIABLE>"){
+        op2 = "$" + ((SymboleValue*)m_operandeDroit)->getChaine();
+    }else if(*((SymboleValue*)m_operandeDroit) == "<CHAINE>"){
+        op2 = ((SymboleValue*)m_operandeDroit)->getChaine();
+        op2.erase(op2.size()-1,1);
+        op2.erase(0,1);
+        op2 = "$" + op2;
+    }else if(*((SymboleValue*)m_operandeDroit) == "<ENTIER>"){
+        op2 = ((SymboleValue*)m_operandeDroit)->getChaine();
+    }else if(((SymboleValue*)m_operandeDroit) == nullptr){
+        op2 = "";
+    }else{
+        ((SymboleValue*)m_operandeDroit)->traduitEnPHP(cout,0);
+    }
+    cout << op2;
     
-//    if(m_operandeDroit == "<VARIABLE>"){
-//        op1 = "$" + ((SymboleValue*)m_operandeDroit)->getChaine();
-//    }else if(m_operandeDroit == "<CHAINE>"){
-//        op1 = ((SymboleValue*)m_operandeDroit)->getChaine();
-//        op1.erase(op1.size()-1,1);
-//        op1.erase(0,1);
-//        op1 = "$" + op1;
-//    }else{
-//        op1 = ((SymboleValue*)m_operandeDroit)->getChaine();
-//    }
-//    //operante gauche
-//    if(m_operandeGauche == "<VARIABLE>"){
-//        op2 = "$" + ((SymboleValue*)m_operandeGauche)->getChaine();
-//    }else if(m_operandeGauche == "<CHAINE>"){
-//        op2 = ((SymboleValue*)m_operandeGauche)->getChaine();
-//        op2.erase(op1.size()-1,1);
-//        op2.erase(0,1);
-//        op2 = "$" + op2;
-//    }else{
-//        op2 = ((SymboleValue*)m_operandeGauche)->getChaine();
-//    }
-//    cout << op1;
-//    if (this->m_operateur == "+") cout << this->m_operateur;
-//    else if (this->m_operateur == "-") cout << this->m_operateur;
-//    else if (this->m_operateur == "*") cout << this->m_operateur;
-//    else if (this->m_operateur == "==") cout << this->m_operateur;
-//    else if (this->m_operateur == "!=") cout << this->m_operateur;
-//    else if (this->m_operateur == "<") cout << this->m_operateur;
-//    else if (this->m_operateur == ">") cout << this->m_operateur;
-//    else if (this->m_operateur == "<=") cout << this->m_operateur;
-//    else if (this->m_operateur == ">=") cout << this->m_operateur;
-//    else if (this->m_operateur == "et") cout << "&&";
-//    else if (this->m_operateur == "ou") cout << "||";
-//    else if (this->m_operateur == "non") cout << "!";
-//    else if (this->m_operateur == "/") cout << this->m_operateur;
-//    cout << op2;
 }
 
 
@@ -157,11 +165,11 @@ int NoeudInstTantQue::executer() {
 }
 
 void NoeudInstTantQue::traduitEnPHP(ostream& cout, unsigned int indentation) const {
-    cout << setw(4*indentation) << "" << "while(";
+    cout << setw(2*indentation) << "" << "while(";
     m_condition->traduitEnPHP(cout, 0);
-    cout << ") {"<<endl;
+    cout << setw(2*indentation) << ") {"<<endl;
     m_sequence->traduitEnPHP(cout, indentation+1);
-    cout << setw(4*indentation) << "" << "}" << endl;
+    cout << setw(2*indentation) << "" << "}" << endl;
 }
 
 
@@ -187,22 +195,22 @@ int NoeudInstSiRiche::executer() {
 }
 
 void NoeudInstSiRiche::traduitEnPHP(ostream& cout, unsigned int indentation) const {
-    cout << setw(4*indentation) << "" << "if(";
+    cout << setw(2*indentation) << "" << "if(";
     m_conditions[0]->traduitEnPHP(cout, 0);
     cout << "){" << endl;
     m_sequences[0]->traduitEnPHP(cout, indentation+1);
-    cout << setw(4*indentation) << "" << "}" << endl;
+    cout << setw(2*indentation) << "" << "}" << endl;
     for(int i = 1; i < m_conditions.size(); i++){
-        cout << setw(4*indentation) << "" << "else if(";
+        cout << setw(2*indentation) << "" << "else if(";
         m_conditions[i]->traduitEnPHP(cout, 0);
         cout << "){" << endl;
         m_sequences[i]->traduitEnPHP(cout, indentation+1);
-        cout << setw(4*indentation) << "" << "}" << endl;
+        cout << setw(2*indentation) << "" << "}" << endl;
     }
     if(m_conditions.size() != m_sequences.size()){ 
-        cout << setw(4*indentation) << "" << "else{";
+        cout << setw(2*indentation) << "" << "else{" << endl;
         m_sequences[m_sequences.size()-1]->traduitEnPHP(cout, indentation+1);
-        cout << setw(4*indentation) << "" << "}" << endl;
+        cout << setw(2*indentation) << "" << "}" << endl;
     }
 }
 
@@ -222,11 +230,11 @@ int NoeudInstRepeter::executer() {
 }
 
 void NoeudInstRepeter::traduitEnPHP(ostream& cout, unsigned int indentation) const {
-    cout << setw(4*indentation) << "" << "do{";
+    cout << setw(2*indentation) << "" << "do{";
     m_sequence->traduitEnPHP(cout, indentation+1);
-    cout << "" << "}while(";
+    cout << setw(2*indentation) << "" << "}while(";
     m_condition->traduitEnPHP(cout, 0);
-    cout << setw(4*indentation) << ")" << endl;
+    cout << setw(2*indentation) << ")" << endl;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -324,11 +332,6 @@ void NoeudInstLire::traduitEnPHP(ostream& cout, unsigned int indentation) const 
 void NoeudInstSi::traduitEnPHP(ostream& cout, unsigned int indentation) const {
 
 }
-
-void Noeud::traduitEnPHP(ostream& cout, unsigned int indentation) const {
-
-}
-
 
 
 
