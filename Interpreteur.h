@@ -17,6 +17,7 @@ public:
                                       //   la table des symboles (ts) et l'arbre abstrait (arbre) auront été construits
 	                                    // Sinon, une exception sera levée
 
+        inline int getNbErr() const {return m_comptErr;}// accesseur
 	inline const TableSymboles & getTable () const  { return m_table;    } // accesseur	
 	inline Noeud* getArbre () const { return m_arbre; }                    // accesseur
 	
@@ -24,6 +25,7 @@ private:
     Lecteur        m_lecteur;  // Le lecteur de symboles utilisé pour analyser le fichier
     TableSymboles  m_table;    // La table des symboles valués
     Noeud*         m_arbre;    // L'arbre abstrait
+    int            m_comptErr;
 
     // Implémentation de la grammaire
     Noeud*  programme();   //   <programme> ::= procedure principale() <seqInst> finproc FIN_FICHIER
@@ -44,6 +46,7 @@ private:
     void tester (const string & symboleAttendu) const throw (SyntaxeException);   // Si symbole courant != symboleAttendu, on lève une exception
     void testerEtAvancer(const string & symboleAttendu) throw (SyntaxeException); // Si symbole courant != symboleAttendu, on lève une exception, sinon on avance
     void erreur (const string & mess) const throw (SyntaxeException);             // Lève une exception "contenant" le message mess
+    void traduitEnPHP(ostream& cout, unsigned int indentation) const ;
 };
 
 #endif /* INTERPRETEUR_H */

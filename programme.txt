@@ -2,13 +2,11 @@
 # Les lignes de commentaires commencent par #
 procedure principale()
     j=5;
+    i=0;    
     pour(i=0;i<3;i=i+1)
         j = j+1; 
+        ecrire(i)
     finpour
-    tantque()
-        i = i+1;
-    fintantque
     ecrire("coucou",i)
-    lire(i)
 finproc
 # Commentaire Final

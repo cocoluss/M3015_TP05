@@ -50,8 +50,10 @@ Noeud* Interpreteur::programme() {
   testerEtAvancer("(");
   testerEtAvancer(")");
   Noeud* sequence = seqInst();
-  testerEtAvancer("finproc");
-  tester("<FINDEFICHIER>");
+  if(m_lecteur.getSymbole() == "finproc"){
+      testerEtAvancer("finproc");
+      tester("<FINDEFICHIER>");
+  }
   if(m_comptErr > 0){
       cout << "Nombre d'erreur trouvé : "<< m_comptErr << endl;
       return nullptr;
@@ -72,20 +74,29 @@ Noeud* Interpreteur::seqInst() {
 
 Noeud* Interpreteur::inst() {
   // <inst> ::= <affectation>  ; | <instSi>
-  if (m_lecteur.getSymbole() == "<VARIABLE>") {
-    Noeud *affect = affectation();
-    testerEtAvancer(";");
-    return affect;
-  }
-  else if (m_lecteur.getSymbole() == "si")return instSiRiche();
-  // Compléter les alternatives chaque fois qu'on rajoute une nouvelle instruction
-  else if(m_lecteur.getSymbole() == "tantque")return instTantQue();
-  else if(m_lecteur.getSymbole() == "repeter")return instRepeter();
-  else if(m_lecteur.getSymbole() == "pour")return instPour();  
-  else if(m_lecteur.getSymbole() == "ecrire")return instEcrire();
-  else if(m_lecteur.getSymbole() == "lire")return instLire();
+    try{
+        
+        if (m_lecteur.getSymbole() == "<VARIABLE>") {
+            Noeud *affect = affectation();
+            testerEtAvancer(";");
+            return affect;
+        }
+        else if (m_lecteur.getSymbole() == "si")return instSiRiche();
+        else if(m_lecteur.getSymbole() == "tantque")return instTantQue();
+        else if(m_lecteur.getSymbole() == "repeter")return instRepeter();
+        else if(m_lecteur.getSymbole() == "pour")return instPour();  
+        else if(m_lecteur.getSymbole() == "ecrire")return instEcrire();
+        else if(m_lecteur.getSymbole() == "lire")return instLire();
 
-  else erreur("Instruction incorrecte");
+        else erreur("Instruction incorrecte");
+        
+    }catch(SyntaxeException e){
+      cout << e.what() <<endl;m_comptErr++;
+       do {
+        m_lecteur.avancer();
+      } while (m_lecteur.getSymbole() == "<VARIABLE>" || m_lecteur.getSymbole() == "si" || m_lecteur.getSymbole() == "tantque" || m_lecteur.getSymbole() == "repeter" || m_lecteur.getSymbole() == "pour" || m_lecteur.getSymbole() == "ecrire" || m_lecteur.getSymbole() == "lire");
+      return nullptr;
+    }
 }
 
 
@@ -222,13 +233,29 @@ Noeud* Interpreteur::instPour() {
     TRY(testerEtAvancer("pour");)
     TRY(testerEtAvancer("(");)
     if (m_lecteur.getSymbole() != ";") {
-        TRY(affectation1 = affectation();)
+//        TRY(affectation1 = affectation();)
+        try{
+            affectation1 = affectation();
+        }catch(SyntaxeException e){
+            cout << e.what() <<endl;m_comptErr++;
+            m_lecteur.avancer();
+        }
     }
     TRY(testerEtAvancer(";");)
-    TRY(condition = expression();)
+        try{
+            condition = expression();
+        }catch(SyntaxeException e){
+            cout << e.what() <<endl;m_comptErr++;
+            m_lecteur.avancer();
+        }
     TRY(testerEtAvancer(";");)
     if (m_lecteur.getSymbole() != ")") {
-        TRY(affectation2 = affectation();)
+        try{
+            affectation1 = affectation();
+        }catch(SyntaxeException e){
+            cout << e.what() <<endl;m_comptErr++;
+            m_lecteur.avancer();
+        }
     }
     TRY(testerEtAvancer(")");)
     sequence = seqInst();
@@ -250,7 +277,12 @@ Noeud* Interpreteur::instEcrire() {
             elements.push_back(m_table.chercheAjoute(m_lecteur.getSymbole()));
             m_lecteur.avancer();
         }else{
-            TRY(elements.push_back(expression());)
+            try{
+                elements.push_back(expression());
+            }catch(SyntaxeException e){
+                cout << e.what() <<endl;m_comptErr++;
+                m_lecteur.avancer();
+            }
         }
     }while(m_lecteur.getSymbole() == ",");
     TRY(testerEtAvancer(")");)
@@ -270,12 +302,20 @@ Noeud* Interpreteur::instLire() {
            TRY(variables.push_back(expression());)
        }
        else{
-           throw SyntaxeException("Pas de variable");
+           erreur("Pas de variable");
        }
     }while(m_lecteur.getSymbole() == ",");
     TRY(testerEtAvancer(")");)  
     return new NoeudInstLire(variables);
 }
+
+void Interpreteur::traduitEnPHP(ostream& cout, unsigned int indentation) const {
+    cout << setw(4*indentation) << "" << "<?php" << endl; //debut du programme php
+    
+    getArbre()->traduitEnPHP(cout,indentation+1);//lance l'operation traduitEnPHP sur la racine
+    cout << setw(4*(indentation+1)) << "?>" << endl;
+}
+
 
 
 

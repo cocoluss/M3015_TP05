@@ -20,6 +20,7 @@ class Noeud {
     virtual int  executer() =0 ; // Méthode pure (non implémentée) qui rend la classe abstraite
     virtual void ajoute(Noeud* instruction) { throw OperationInterditeException(); }
     virtual ~Noeud() {} // Présence d'un destructeur virtuel conseillée dans les classes abstraites
+    virtual void traduitEnPHP(ostream & cout, unsigned int indentation)const ;
 };
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -31,7 +32,9 @@ class NoeudSeqInst : public Noeud {
     ~NoeudSeqInst() {} // A cause du destructeur virtuel de la classe Noeud
     int executer();    // Exécute chaque instruction de la séquence
     void ajoute(Noeud* instruction);  // Ajoute une instruction à la séquence
+    void traduitEnPHP(ostream& cout, unsigned int indentation) const override;
 
+    
   private:
     vector<Noeud *> m_instructions; // pour stocker les instructions de la séquence
 };
@@ -44,7 +47,8 @@ class NoeudAffectation : public Noeud {
      NoeudAffectation(Noeud* variable, Noeud* expression); // construit une affectation
     ~NoeudAffectation() {} // A cause du destructeur virtuel de la classe Noeud
     int executer();        // Exécute (évalue) l'expression et affecte sa valeur à la variable
-
+    void traduitEnPHP(ostream& cout, unsigned int indentation) const override;
+    
   private:
     Noeud* m_variable;
     Noeud* m_expression;
@@ -59,7 +63,9 @@ class NoeudOperateurBinaire : public Noeud {
     // Construit une opération binaire : operandeGauche operateur OperandeDroit
    ~NoeudOperateurBinaire() {} // A cause du destructeur virtuel de la classe Noeud
     int executer();            // Exécute (évalue) l'opération binaire)
+    void traduitEnPHP(ostream& cout, unsigned int indentation) const override;
 
+    
   private:
     Symbole m_operateur;
     Noeud*  m_operandeGauche;
@@ -75,7 +81,9 @@ class NoeudInstSi : public Noeud {
      // Construit une "instruction si" avec sa condition et sa séquence d'instruction
    ~NoeudInstSi() {} // A cause du destructeur virtuel de la classe Noeud
     int executer();  // Exécute l'instruction si : si condition vraie on exécute la séquence
+    void traduitEnPHP(ostream& cout, unsigned int indentation) const override;
 
+    
   private:
     Noeud* m_condition;
     Noeud* m_sequence;
@@ -88,6 +96,8 @@ class NoeudInstTantQue : public Noeud{
         NoeudInstTantQue(Noeud* condition, Noeud* sequence);
         ~NoeudInstTantQue(){}
         int executer();
+        void traduitEnPHP(ostream& cout, unsigned int indentation) const override;
+
         
     private:
         Noeud* m_condition;
@@ -100,6 +110,8 @@ class NoeudInstSiRiche : public Noeud{
         NoeudInstSiRiche(vector<Noeud*> conditions, vector<Noeud*> sequences);
         ~NoeudInstSiRiche(){}
         int executer();
+        void traduitEnPHP(ostream& cout, unsigned int indentation) const override;
+
     private:
         vector<Noeud*> m_conditions;
         vector<Noeud*> m_sequences;
@@ -113,6 +125,8 @@ class NoeudInstRepeter : public Noeud{
         NoeudInstRepeter(Noeud* condition, Noeud* sequence);
         ~NoeudInstRepeter(){}
         int executer();
+        void traduitEnPHP(ostream& cout, unsigned int indentation) const override;
+
         
     private:
         Noeud* m_condition;
@@ -126,6 +140,8 @@ class NoeudInstPour : public Noeud{
         NoeudInstPour(Noeud* condition, Noeud* sequence, Noeud* affectation1, Noeud* affectation2);
         ~NoeudInstPour(){}
         int executer();
+        void traduitEnPHP(ostream& cout, unsigned int indentation) const override;
+
         
     private:
         Noeud* m_condition;
@@ -141,6 +157,8 @@ class NoeudInstEcrire : public Noeud{
         NoeudInstEcrire(vector<Noeud*> elements);
         ~NoeudInstEcrire() {}
         int executer();
+        void traduitEnPHP(ostream& cout, unsigned int indentation) const override;
+
     private:
         vector<Noeud*> m_elems;
 };
@@ -152,6 +170,8 @@ class NoeudInstLire : public Noeud{
         NoeudInstLire(vector<Noeud*> variables);
         ~NoeudInstLire() {}
         int executer();
+        void traduitEnPHP(ostream& cout, unsigned int indentation) const override;
+
     private:
         vector<Noeud*> m_vars;
 };

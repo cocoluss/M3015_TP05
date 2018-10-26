@@ -12,7 +12,7 @@ class SymboleValue : public Symbole,  // Un symbole valué est un symbole qui a 
                      public Noeud  {  //  et c'est aussi une feuille de l'arbre abstrait
 public:
 	  SymboleValue(const Symbole & s); // Construit un symbole valué à partir d'un symbole existant s
-	  ~SymboleValue( ) {}
+	  ~SymboleValue() {}
 	  int  executer();         // exécute le SymboleValue (revoie sa valeur !)
 	  inline void setValeur(int valeur)    { this->m_valeur=valeur; m_defini=true;  } // accesseur
 	  inline bool estDefini()              { return m_defini;                       } // accesseur
