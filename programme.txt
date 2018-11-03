@@ -9,7 +9,6 @@ finproc
 procedure principale()
     i=1;
     test()
-    principale()
 finproc
 # Commentaire Final
 
