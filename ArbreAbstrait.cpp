@@ -4,7 +4,8 @@
 #include "Symbole.h"
 #include "SymboleValue.h"
 #include "Exceptions.h"
-
+#include "TableSymboles.h"
+    
 ////////////////////////////////////////////////////////////////////////////////
 // NoeudSeqInst
 ////////////////////////////////////////////////////////////////////////////////
@@ -13,8 +14,9 @@ NoeudSeqInst::NoeudSeqInst() : m_instructions() {
 }
 
 int NoeudSeqInst::executer() {
-  for (unsigned int i = 0; i < m_instructions.size(); i++)
+  for (unsigned int i = 0; i < m_instructions.size(); i++){
     m_instructions[i]->executer(); // on exécute chaque instruction de la séquence
+  }
   return 0; // La valeur renvoyée ne représente rien !
 }
 
@@ -24,10 +26,9 @@ void NoeudSeqInst::ajoute(Noeud* instruction) {
 
 void NoeudSeqInst::traduitEnPHP(ostream& cout, unsigned int indentation) const {
     for (unsigned int i = 0; i < m_instructions.size(); i++){
-        m_instructions[i]->traduitEnPHP(cout,indentation+1);
-        if(typeid(*m_instructions[i]) != typeid(NoeudInstTantQue)){    
-            cout << ";" << endl;
-        }
+
+        m_instructions[i]->traduitEnPHP(cout,indentation+2);  
+        cout << "\n";  
     }
 }
 
@@ -47,11 +48,14 @@ int NoeudAffectation::executer() {
 }
 
 void NoeudAffectation::traduitEnPHP(ostream& cout, unsigned int indentation) const {
-    cout<< setw(2*indentation) << "$" << ((SymboleValue*)m_variable)->getChaine() << " = " ;
-    m_expression->traduitEnPHP(cout,0);
-//    cout << ";" << endl;
+    cout<< setw(indentation) << "$" << ((SymboleValue*)m_variable)->getChaine() << " = ";
+    string var = ((SymboleValue*)m_expression)->getChaine();
+    if (var == "+" || var == "-" || var == "*" || var == "/") {
+        ((NoeudOperateurBinaire*)m_expression)->traduitEnPHP(cout,0);
+    }
+    else cout << ((SymboleValue*)m_expression)->getChaine();
+    cout << ";";
 }
-
 
 ////////////////////////////////////////////////////////////////////////////////
 // NoeudOperateurBinaire
@@ -91,8 +95,7 @@ void NoeudOperateurBinaire::traduitEnPHP(ostream& cout, unsigned int indentation
     string oper;
     //operante gauche
     if(*((SymboleValue*)m_operandeGauche) == "<VARIABLE>"){
-        op1 = "$" ;
-        ((SymboleValue*)m_operandeGauche)->traduitEnPHP(cout,0);
+        op1 = "$" + ((SymboleValue*)m_operandeGauche)->getChaine();
     }else if(*((SymboleValue*)m_operandeGauche) == "<CHAINE>"){
         op1 = ((SymboleValue*)m_operandeGauche)->getChaine();
         op1.erase(op1.size()-1,1);
@@ -103,7 +106,7 @@ void NoeudOperateurBinaire::traduitEnPHP(ostream& cout, unsigned int indentation
     }else if(((SymboleValue*)m_operandeGauche) == nullptr){
         op1 = "";
     }else{
-        ((SymboleValue*)m_operandeGauche)->traduitEnPHP(cout,0);
+        op1 = ((SymboleValue*)m_operandeGauche)->getChaine();
     }
     cout << op1;
     //operateur
@@ -125,7 +128,7 @@ void NoeudOperateurBinaire::traduitEnPHP(ostream& cout, unsigned int indentation
     }else if(((SymboleValue*)m_operandeDroit) == nullptr){
         op2 = "";
     }else{
-        ((SymboleValue*)m_operandeDroit)->traduitEnPHP(cout,0);
+        op2 = std::to_string(((SymboleValue*)m_operandeDroit)->executer());
     }
     cout << op2;
     
@@ -140,14 +143,14 @@ NoeudInstSi::NoeudInstSi(Noeud* condition, Noeud* sequence)
 : m_condition(condition), m_sequence(sequence) {
 }
 
-
-
 int NoeudInstSi::executer() {
   if (m_condition->executer()) m_sequence->executer();
   return 0; // La valeur renvoyée ne représente rien !
 }
 
+void NoeudInstSi::traduitEnPHP(ostream& cout, unsigned int indentation) const {
 
+}
 
 ////////////////////////////////////////////////////////////////////////////////
 // NoeudInstTantQue
@@ -165,11 +168,17 @@ int NoeudInstTantQue::executer() {
 }
 
 void NoeudInstTantQue::traduitEnPHP(ostream& cout, unsigned int indentation) const {
-    cout << setw(2*indentation) << "" << "while(";
+    
+    if (indentation > 4) {
+        cout << "\n";  
+    }
+    
+    cout << setw(indentation-1) << "" << "while(";
     m_condition->traduitEnPHP(cout, 0);
-    cout << setw(2*indentation) << ") {"<<endl;
-    m_sequence->traduitEnPHP(cout, indentation+1);
-    cout << setw(2*indentation) << "" << "}" << endl;
+    //string chaine = ((SymboleValue*)m_sequence)->getChaine();
+    cout << ") {" << "\n";
+    m_sequence->traduitEnPHP(cout, indentation);
+    cout << setw(indentation-1) << "" << "}" << "\n";
 }
 
 
@@ -195,25 +204,31 @@ int NoeudInstSiRiche::executer() {
 }
 
 void NoeudInstSiRiche::traduitEnPHP(ostream& cout, unsigned int indentation) const {
-    cout << setw(2*indentation) << "" << "if(";
-    m_conditions[0]->traduitEnPHP(cout, 0);
-    cout << "){" << endl;
-    m_sequences[0]->traduitEnPHP(cout, indentation+1);
-    cout << setw(2*indentation) << "" << "}" << endl;
-    for(int i = 1; i < m_conditions.size(); i++){
-        cout << setw(2*indentation) << "" << "else if(";
-        m_conditions[i]->traduitEnPHP(cout, 0);
-        cout << "){" << endl;
-        m_sequences[i]->traduitEnPHP(cout, indentation+1);
-        cout << setw(2*indentation) << "" << "}" << endl;
+        
+    if (indentation > 4) {
+        cout << "\n";  
     }
-    if(m_conditions.size() != m_sequences.size()){ 
-        cout << setw(2*indentation) << "" << "else{" << endl;
-        m_sequences[m_sequences.size()-1]->traduitEnPHP(cout, indentation+1);
-        cout << setw(2*indentation) << "" << "}" << endl;
+    
+    cout << setw(indentation-1) << "" << "if(";
+    m_conditions[0]->traduitEnPHP(cout, 0);
+    cout << "){" << "\n";
+    m_sequences[0]->traduitEnPHP(cout, indentation);
+    cout << setw(indentation-1) << "" << "}" << "\n";
+    for(int i = 1; i < m_conditions.size(); i++){
+        cout << "\n";  
+        cout << setw(indentation-1) << "" << "else if(";
+        m_conditions[i]->traduitEnPHP(cout, 0);
+        cout << "){" << "\n";
+        m_sequences[i]->traduitEnPHP(cout, indentation);
+        cout << setw(indentation-1) << "" << "}" << "\n";
+    }
+    if(m_conditions.size() != m_sequences.size()){
+        cout << "\n";
+        cout << setw(indentation-1) << "" << "else{" << "\n";
+        m_sequences[m_sequences.size()-1]->traduitEnPHP(cout, indentation);
+        cout << setw(indentation-1) << "" << "}" << "\n";
     }
 }
-
 
 ////////////////////////////////////////////////////////////////////////////////
 // NoeudInstRepeter
@@ -230,11 +245,16 @@ int NoeudInstRepeter::executer() {
 }
 
 void NoeudInstRepeter::traduitEnPHP(ostream& cout, unsigned int indentation) const {
-    cout << setw(2*indentation) << "" << "do{";
-    m_sequence->traduitEnPHP(cout, indentation+1);
-    cout << setw(2*indentation) << "" << "}while(";
+            
+    if (indentation > 4) {
+        cout << "\n";  
+    }
+    
+    cout << setw(indentation-1) << "" << "do{"<<"\n";
+    m_sequence->traduitEnPHP(cout, indentation);
+    cout << setw(indentation-1) << "" << "}while(";
     m_condition->traduitEnPHP(cout, 0);
-    cout << setw(2*indentation) << ")" << endl;
+    cout << ");" << "\n";
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -273,9 +293,29 @@ int NoeudInstPour::executer() {
 }
 
 void NoeudInstPour::traduitEnPHP(ostream& cout, unsigned int indentation) const {
-        
-}
+           
+    if (indentation > 4) {
+        cout << "\n";  
+    }
+    
+    cout << setw(indentation-1) << "" << "for(";
+    
+    if (m_affectation1 != nullptr) {
+        m_affectation1->traduitEnPHP(cout,0);
+    }
+    cout << ";";
 
+    m_condition->traduitEnPHP(cout, 0);
+    
+    if (m_affectation2 != nullptr) {
+        m_affectation2->traduitEnPHP(cout,0);
+    }
+    cout << ";";
+    
+    cout << ") {"<< "\n";
+    m_sequence->traduitEnPHP(cout, indentation);
+    cout << setw(indentation-1) << "" << "}" << "\n";  
+}
 
 ////////////////////////////////////////////////////////////////////////////////
 // NoeudInstEcrire
@@ -299,11 +339,30 @@ int NoeudInstEcrire::executer() {
             cout << e->executer();
         }
     }
-    cout << endl;
+    cout << "\n";
 }
 
 void NoeudInstEcrire::traduitEnPHP(ostream& cout, unsigned int indentation) const {
+            
+    if (indentation > 4) {
+        cout << "\n";  
+    }
 
+    cout << setw(indentation-1) << "" << "echo (";
+    int n = 0;
+    for(auto e : m_elems){
+        n++;
+        if(typeid(*e)==typeid(SymboleValue) && *((SymboleValue*)e)== "<CHAINE>"){
+            cout << ((SymboleValue*)e)->getChaine();
+        }
+        else{       
+            cout << "$" << ((SymboleValue*)e)->getChaine();
+        }
+        if (n != m_elems.size()) {
+            cout << " . ";
+        }
+    }
+    cout << ");\n";
 }
 
 
@@ -321,20 +380,37 @@ int NoeudInstLire::executer() {
     for(auto var : m_vars){
         cin >> n;
         ((SymboleValue*)var)->setValeur(n);
-    }
-    
+    } 
 }
 
 void NoeudInstLire::traduitEnPHP(ostream& cout, unsigned int indentation) const {
+        
+    if (indentation > 4) {
+        cout << "\n";  
+    }
+    
+    for(auto var : m_vars){
+        cout << setw(indentation-1) << "" << ((SymboleValue*)var)->getChaine() << " = $_GET[" << ((SymboleValue*)var)->getChaine() << "];\n"; 
+    }
+}
+
+NoeudInstAppelProcedure::NoeudInstAppelProcedure(vector<Noeud*> variables, Noeud* sequence)
+: m_vars(variables), m_sequence(sequence){
+}
+
+int NoeudInstAppelProcedure::executer() {
+    if (!m_vars.empty()) {
+        for(auto var : m_vars){
+            var->executer();
+        }
+    }
+    m_sequence->executer();
+}
+
+void NoeudInstAppelProcedure::traduitEnPHP(ostream& cout, unsigned int indentation) const {
 
 }
 
-void NoeudInstSi::traduitEnPHP(ostream& cout, unsigned int indentation) const {
+void Noeud::traduitEnPHP(ostream& cout, unsigned int indentation) const {
 
 }
-
-
-
-
-
-

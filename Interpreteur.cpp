@@ -15,6 +15,16 @@ void Interpreteur::analyse() {
   m_arbre = programme(); // on lance l'analyse de la première règle
 }
 
+void Interpreteur::analyseproc() {
+    Noeud* sequence;
+    do{
+        sequence = instProcedure();
+        if (sequence != nullptr) {
+            m_arbreproc[m_procActuelle] = sequence;
+        }
+    }while(sequence != nullptr);
+}
+
 void Interpreteur::tester(const string & symboleAttendu) const throw (SyntaxeException) {
   // Teste si le symbole courant est égal au symboleAttendu... Si non, lève une exception
   static char messageWhat[256];
@@ -45,8 +55,8 @@ void Interpreteur::erreur(const string & message) const throw (SyntaxeException)
 
 Noeud* Interpreteur::programme() {
   // <programme> ::= procedure principale() <seqInst> finproc FIN_FICHIER
-  testerEtAvancer("procedure");
   testerEtAvancer("principale");
+  m_procActuelle = "principale";
   testerEtAvancer("(");
   testerEtAvancer(")");
   Noeud* sequence = seqInst();
@@ -74,27 +84,34 @@ Noeud* Interpreteur::seqInst() {
 
 Noeud* Interpreteur::inst() {
   // <inst> ::= <affectation>  ; | <instSi>
+        string proc = "";
     try{
         
+        for(auto nom : m_tableProcedure){
+            proc = nom.first;
+            if (m_lecteur.getSymbole() == nom.first)return instAppelProcedure();
+        }
+
         if (m_lecteur.getSymbole() == "<VARIABLE>") {
             Noeud *affect = affectation();
             testerEtAvancer(";");
             return affect;
         }
-        else if (m_lecteur.getSymbole() == "si")return instSiRiche();
+        else if(m_lecteur.getSymbole() == "si")return instSiRiche();
         else if(m_lecteur.getSymbole() == "tantque")return instTantQue();
         else if(m_lecteur.getSymbole() == "repeter")return instRepeter();
         else if(m_lecteur.getSymbole() == "pour")return instPour();  
         else if(m_lecteur.getSymbole() == "ecrire")return instEcrire();
         else if(m_lecteur.getSymbole() == "lire")return instLire();
-
+        else if(m_lecteur.getSymbole() == "procedure")return instProcedure();
+        
         else erreur("Instruction incorrecte");
         
     }catch(SyntaxeException e){
       cout << e.what() <<endl;m_comptErr++;
        do {
         m_lecteur.avancer();
-      } while (m_lecteur.getSymbole() == "<VARIABLE>" || m_lecteur.getSymbole() == "si" || m_lecteur.getSymbole() == "tantque" || m_lecteur.getSymbole() == "repeter" || m_lecteur.getSymbole() == "pour" || m_lecteur.getSymbole() == "ecrire" || m_lecteur.getSymbole() == "lire");
+      } while (m_lecteur.getSymbole() == proc || m_lecteur.getSymbole() == "<VARIABLE>" || m_lecteur.getSymbole() == "si" || m_lecteur.getSymbole() == "tantque" || m_lecteur.getSymbole() == "repeter" || m_lecteur.getSymbole() == "pour" || m_lecteur.getSymbole() == "ecrire" || m_lecteur.getSymbole() == "lire");
       return nullptr;
     }
 }
@@ -103,7 +120,7 @@ Noeud* Interpreteur::inst() {
 Noeud* Interpreteur::affectation() {
   // <affectation> ::= <variable> = <expression> 
   tester("<VARIABLE>");
-  Noeud* var = m_table.chercheAjoute(m_lecteur.getSymbole()); // La variable est ajoutée à la table eton la mémorise
+  Noeud* var = m_table[m_procActuelle].chercheAjoute(m_lecteur.getSymbole()); // La variable est ajoutée à la table eton la mémorise
   m_lecteur.avancer();
   testerEtAvancer("=");
   Noeud* exp = expression();             // On mémorise l'expression trouvée
@@ -132,12 +149,12 @@ Noeud* Interpreteur::facteur() {
   // <facteur> ::= <entier> | <variable> | - <facteur> | non <facteur> | ( <expression> )
   Noeud* fact = nullptr;
   if (m_lecteur.getSymbole() == "<VARIABLE>" || m_lecteur.getSymbole() == "<ENTIER>") {
-    fact = m_table.chercheAjoute(m_lecteur.getSymbole()); // on ajoute la variable ou l'entier à la table
+    fact = m_table[m_procActuelle].chercheAjoute(m_lecteur.getSymbole()); // on ajoute la variable ou l'entier à la table
     m_lecteur.avancer();
   } else if (m_lecteur.getSymbole() == "-") { // - <facteur>
     m_lecteur.avancer();
     // on représente le moins unaire (- facteur) par une soustraction binaire (0 - facteur)
-    fact = new NoeudOperateurBinaire(Symbole("-"), m_table.chercheAjoute(Symbole("0")), facteur());
+    fact = new NoeudOperateurBinaire(Symbole("-"), m_table[m_procActuelle].chercheAjoute(Symbole("0")), facteur());
   } else if (m_lecteur.getSymbole() == "non") { // non <facteur>
     m_lecteur.avancer();
     // on représente le moins unaire (- facteur) par une soustractin binaire (0 - facteur)
@@ -251,7 +268,7 @@ Noeud* Interpreteur::instPour() {
     TRY(testerEtAvancer(";");)
     if (m_lecteur.getSymbole() != ")") {
         try{
-            affectation1 = affectation();
+            affectation2 = affectation();
         }catch(SyntaxeException e){
             cout << e.what() <<endl;m_comptErr++;
             m_lecteur.avancer();
@@ -265,6 +282,7 @@ Noeud* Interpreteur::instPour() {
 
 Noeud* Interpreteur::instEcrire() {
     //<instEcrire> ::= ecrire ( <expression> | <chaine> { , <expression> | <chaine> } )
+    
     vector<Noeud*> elements;
     
     TRY(testerEtAvancer("ecrire");)
@@ -274,7 +292,7 @@ Noeud* Interpreteur::instEcrire() {
             m_lecteur.avancer();
         }
         if(m_lecteur.getSymbole() == "<CHAINE>"){
-            elements.push_back(m_table.chercheAjoute(m_lecteur.getSymbole()));
+            elements.push_back(m_table[m_procActuelle].chercheAjoute(m_lecteur.getSymbole()));
             m_lecteur.avancer();
         }else{
             try{
@@ -309,11 +327,75 @@ Noeud* Interpreteur::instLire() {
     return new NoeudInstLire(variables);
 }
 
+Noeud* Interpreteur::instProcedure() {
+  //<instProcedure> ::= procedure  <chaine>(<variable>{,<variable>}) <seqInst> finproc
+    vector<Noeud*> procedure;
+    Noeud* sequence;
+    string nomProcedure;
+    testerEtAvancer("procedure");
+    if (m_lecteur.getSymbole() != "principale") {
+        nomProcedure = m_lecteur.getSymbole().getChaine();
+        m_procActuelle = nomProcedure;
+        m_lecteur.avancer();
+        testerEtAvancer("(");
+        while(m_lecteur.getSymbole() == "<VARIABLE>"){
+            TRY(procedure.push_back(expression());)
+        }
+        testerEtAvancer(")");
+        sequence = seqInst();
+        procedure.push_back(sequence);
+        testerEtAvancer("finproc");
+        if(m_comptErr > 0){
+            cout << "Nombre d'erreur trouvé : "<< m_comptErr << endl;
+        }
+        else m_tableProcedure[nomProcedure] = procedure;
+        return sequence;
+    }
+    else return nullptr;
+}
+
+Noeud* Interpreteur::instAppelProcedure() {
+  //<instAppelProcedure> ::= <chaine>(<variable>{,<variable>})
+    for(auto nom : m_tableProcedure){
+        if (nom.first == m_lecteur.getSymbole().getChaine()) {
+            string nomProc = m_procActuelle;
+            vector<Noeud*> variables;
+            Noeud* sequence;
+            
+            setProcActuelle(nom.first);
+            m_lecteur.avancer();
+            
+            testerEtAvancer("(");
+            
+            for(auto elem : nom.second){
+                
+                if(m_lecteur.getSymbole().getChaine() == ",") {
+                    m_lecteur.avancer();
+                }
+            
+                if(m_lecteur.getSymbole() == "<VARIABLE>"){
+                    int val = stoi(m_lecteur.getSymbole().getChaine());
+                    m_lecteur.avancer();
+                    ((SymboleValue*)elem)->setValeur(val);
+                    variables.push_back(elem);
+                }
+                
+                else sequence = elem;
+            }
+            
+            testerEtAvancer(")");
+            
+            setProcActuelle(nomProc);
+            return new NoeudInstAppelProcedure(variables,sequence);
+        }
+    }
+}
+
 void Interpreteur::traduitEnPHP(ostream& cout, unsigned int indentation) const {
-    cout << setw(4*indentation) << "" << "<?php" << endl; //debut du programme php
+    cout << setw(4*indentation) << "" << "<?php" << "\n"; //debut du programme php
     
     getArbre()->traduitEnPHP(cout,indentation+1);//lance l'operation traduitEnPHP sur la racine
-    cout << setw(4*(indentation+1)) << "?>" << endl;
+    cout << setw(4*(indentation+1)) << "?>" << "\n";
 }
 
 

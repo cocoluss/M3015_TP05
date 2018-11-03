@@ -20,7 +20,7 @@ class Noeud {
     virtual int  executer() =0 ; // Méthode pure (non implémentée) qui rend la classe abstraite
     virtual void ajoute(Noeud* instruction) { throw OperationInterditeException(); }
     virtual ~Noeud() {} // Présence d'un destructeur virtuel conseillée dans les classes abstraites
-    virtual void traduitEnPHP(ostream & cout, unsigned int indentation)const =0;
+    virtual void traduitEnPHP(ostream & cout, unsigned int indentation)const;
 };
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -174,6 +174,20 @@ class NoeudInstLire : public Noeud{
 
     private:
         vector<Noeud*> m_vars;
+};
+
+////////////////////////////////////////////////////////////////////////////////
+class NoeudInstAppelProcedure : public Noeud{
+    //"procedure"
+    public :
+        NoeudInstAppelProcedure(vector<Noeud*> variables, Noeud* sequence);
+        ~NoeudInstAppelProcedure() {}
+        int executer();
+        void traduitEnPHP(ostream& cout, unsigned int indentation) const override;
+
+    private:
+        vector<Noeud*> m_vars;
+        Noeud* m_sequence;
 };
 
 #endif /* ARBREABSTRAIT_H */

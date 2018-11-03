@@ -1,6 +1,8 @@
 #ifndef INTERPRETEUR_H
 #define INTERPRETEUR_H
 
+#include <map>
+
 #include "Symbole.h"
 #include "Lecteur.h"
 #include "Exceptions.h"
@@ -16,17 +18,24 @@ public:
 	                                    //   cette méthode se termine normalement et affiche un message "Syntaxe correcte".
                                       //   la table des symboles (ts) et l'arbre abstrait (arbre) auront été construits
 	                                    // Sinon, une exception sera levée
+        void analyseproc();
 
         void traduitEnPHP(ostream& cout, unsigned int indentation) const ;
         inline int getNbErr() const {return m_comptErr;}// accesseur
-	inline const TableSymboles & getTable () const  { return m_table;    } // accesseur	
-	inline Noeud* getArbre () const { return m_arbre; }                    // accesseur
+	inline const map<string,TableSymboles> & getTable () const  { return m_table;    } // accesseur	
+	inline Noeud* getArbre () const { return m_arbre; }                    // accesseur	
+	inline map<string, Noeud*> getArbreproc () const { return m_arbreproc; }                    // accesseur
+	inline int getTailleArbreproc () const { return m_arbreproc.size(); }                    
+        inline void setProcActuelle(string proc){ m_procActuelle = proc; }
 	
 private:
-    Lecteur        m_lecteur;  // Le lecteur de symboles utilisé pour analyser le fichier
-    TableSymboles  m_table;    // La table des symboles valués
-    Noeud*         m_arbre;    // L'arbre abstrait
-    int            m_comptErr;
+    Lecteur                     m_lecteur;  // Le lecteur de symboles utilisé pour analyser le fichier
+    map<string, TableSymboles>   m_table;    // La table des symboles valués
+    Noeud*                      m_arbre;    // L'arbre abstrait
+    map<string, Noeud*>              m_arbreproc;    // L'arbre abstrait
+    int                         m_comptErr;
+    string                      m_procActuelle = "";
+    map<string,vector<Noeud*>>  m_tableProcedure;   
 
     // Implémentation de la grammaire
     Noeud*  programme();   //   <programme> ::= procedure principale() <seqInst> finproc FIN_FICHIER
@@ -43,6 +52,8 @@ private:
     Noeud*  instPour();
     Noeud*  instEcrire();
     Noeud*  instLire();
+    Noeud*  instProcedure();
+    Noeud*  instAppelProcedure();
     // outils pour simplifier l'analyse syntaxique
     void tester (const string & symboleAttendu) const throw (SyntaxeException);   // Si symbole courant != symboleAttendu, on lève une exception
     void testerEtAvancer(const string & symboleAttendu) throw (SyntaxeException); // Si symbole courant != symboleAttendu, on lève une exception, sinon on avance
