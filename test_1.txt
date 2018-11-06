@@ -1,0 +1,8 @@
+# Fichier de test
+# Les lignes de commentaires commencent par #
+procedure principale()
+   #operateur
+    i = 2+1*2;
+    ecrire(i)
+finproc
+# Commentaire Final

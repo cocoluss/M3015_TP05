@@ -9,6 +9,24 @@ finproc
 procedure principale()
     i=1;
     test()
+    j=5;
+    i=3;
+    si(j == 5) j = 3;
+    finsi
+    si(j == 5) j = 3;
+    sinonsi(j == 3) j = 1;
+    finsi
+    si(j == 5) j = 3;
+    sinonsi(j == 3) j = 1;
+    sinon j = 5;
+    finsi
+    pour(;i>-10;) i = i -1;finpour
+    tantque(j < 11) j=j+1;
+        tantque(j < 11) 
+            j=j+1;
+        fintantque 
+    fintantque 
+    repeter i=i-1; jusqua(i > -200)
 finproc
 # Commentaire Final
 

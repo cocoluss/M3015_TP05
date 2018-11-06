@@ -49,11 +49,7 @@ int NoeudAffectation::executer() {
 
 void NoeudAffectation::traduitEnPHP(ostream& cout, unsigned int indentation) const {
     cout<< setw(indentation) << "$" << ((SymboleValue*)m_variable)->getChaine() << " = ";
-    string var = ((SymboleValue*)m_expression)->getChaine();
-    if (var == "+" || var == "-" || var == "*" || var == "/") {
-        ((NoeudOperateurBinaire*)m_expression)->traduitEnPHP(cout,0);
-    }
-    else cout << ((SymboleValue*)m_expression)->getChaine();
+    m_expression->traduitEnPHP(cout,0);
     cout << ";";
 }
 
@@ -96,18 +92,19 @@ void NoeudOperateurBinaire::traduitEnPHP(ostream& cout, unsigned int indentation
     //operante gauche
     if(*((SymboleValue*)m_operandeGauche) == "<VARIABLE>"){
         op1 = "$" + ((SymboleValue*)m_operandeGauche)->getChaine();
-    }else if(*((SymboleValue*)m_operandeGauche) == "<CHAINE>"){
-        op1 = ((SymboleValue*)m_operandeGauche)->getChaine();
-        op1.erase(op1.size()-1,1);
-        op1.erase(0,1);
-        op1 = "$" + op1;
+//    }else if(*((SymboleValue*)m_operandeGauche) == "<CHAINE>"){
+//        op1 = ((SymboleValue*)m_operandeGauche)->getChaine();
+//        op1.erase(op1.size()-1,1);
+//        op1.erase(0,1);
+//        op1 = "$" + op1;
     }else if(*((SymboleValue*)m_operandeGauche) == "<ENTIER>"){
         op1 = ((SymboleValue*)m_operandeGauche)->getChaine();
     }else if(((SymboleValue*)m_operandeGauche) == nullptr){
         op1 = "";
     }else{
-        op1 = ((SymboleValue*)m_operandeGauche)->getChaine();
+        m_operandeGauche->traduitEnPHP(cout,0);
     }
+    op1 = op1;
     cout << op1;
     //operateur
     if (this->m_operateur == "et") oper = "&&";
@@ -118,17 +115,17 @@ void NoeudOperateurBinaire::traduitEnPHP(ostream& cout, unsigned int indentation
     //operante droite
     if(*((SymboleValue*)m_operandeDroit) == "<VARIABLE>"){
         op2 = "$" + ((SymboleValue*)m_operandeDroit)->getChaine();
-    }else if(*((SymboleValue*)m_operandeDroit) == "<CHAINE>"){
-        op2 = ((SymboleValue*)m_operandeDroit)->getChaine();
-        op2.erase(op2.size()-1,1);
-        op2.erase(0,1);
-        op2 = "$" + op2;
+//    }else if(*((SymboleValue*)m_operandeDroit) == "<CHAINE>"){
+//        op2 = ((SymboleValue*)m_operandeDroit)->getChaine();
+//        op2.erase(op2.size()-1,1);
+//        op2.erase(0,1);
+//        op2 = "$" + op2;
     }else if(*((SymboleValue*)m_operandeDroit) == "<ENTIER>"){
         op2 = ((SymboleValue*)m_operandeDroit)->getChaine();
     }else if(((SymboleValue*)m_operandeDroit) == nullptr){
         op2 = "";
     }else{
-        op2 = std::to_string(((SymboleValue*)m_operandeDroit)->executer());
+        m_operandeDroit->traduitEnPHP(cout,0);
     }
     cout << op2;
     
