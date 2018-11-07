@@ -27,8 +27,7 @@ void NoeudSeqInst::ajoute(Noeud* instruction) {
 void NoeudSeqInst::traduitEnPHP(ostream& cout, unsigned int indentation) const {
     for (unsigned int i = 0; i < m_instructions.size(); i++){
 
-        m_instructions[i]->traduitEnPHP(cout,indentation+2);  
-        cout << "\n";  
+        m_instructions[i]->traduitEnPHP(cout,indentation+2);
     }
 }
 
@@ -50,7 +49,7 @@ int NoeudAffectation::executer() {
 void NoeudAffectation::traduitEnPHP(ostream& cout, unsigned int indentation) const {
     cout<< setw(indentation) << "$" << ((SymboleValue*)m_variable)->getChaine() << " = ";
     m_expression->traduitEnPHP(cout,0);
-    cout << ";";
+    cout << ";\n";
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -391,8 +390,8 @@ void NoeudInstLire::traduitEnPHP(ostream& cout, unsigned int indentation) const 
     }
 }
 
-NoeudInstAppelProcedure::NoeudInstAppelProcedure(vector<Noeud*> variables, Noeud* sequence)
-: m_vars(variables), m_sequence(sequence){
+NoeudInstAppelProcedure::NoeudInstAppelProcedure(vector<Noeud*> variables, vector<int> oldVariables, Noeud* sequence, string nom)
+: m_vars(variables), m_sequence(sequence), m_nom(nom), m_oldVars(oldVariables){
 }
 
 int NoeudInstAppelProcedure::executer() {
@@ -406,6 +405,19 @@ int NoeudInstAppelProcedure::executer() {
 
 void NoeudInstAppelProcedure::traduitEnPHP(ostream& cout, unsigned int indentation) const {
 
+    cout << setw(indentation-1) << "" << m_nom << "(";
+    int i = 0;
+    for(auto vars : m_oldVars) {
+        cout << vars;
+        if (i != 0 && i != m_oldVars.size()-2) {
+            cout << ", ";
+        }
+        i++;
+    }
+    cout << ");\n";
+    
+
+    
 }
 
 void Noeud::traduitEnPHP(ostream& cout, unsigned int indentation) const {

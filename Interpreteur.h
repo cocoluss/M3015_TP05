@@ -25,18 +25,19 @@ public:
 	inline const map<string,TableSymboles> & getTable () const  { return m_table;    } // accesseur	
 	inline Noeud* getArbre () const { return m_arbre; }                    // accesseur	
 	inline map<string, Noeud*> getArbreproc () const { return m_arbreproc; }                    // accesseur
-	inline int getTailleArbreproc () const { return m_arbreproc.size(); }                    
+	inline int getTailleArbreproc () const { return m_arbreproc.size(); }                       
+	inline map<string, vector<Noeud*>> getTableProcedure () const { return m_tableProcedure; }                    
         inline void setProcActuelle(string proc){ m_procActuelle = proc; }
 	
 private:
     Lecteur                     m_lecteur;  // Le lecteur de symboles utilisé pour analyser le fichier
-    map<string, TableSymboles>   m_table;    // La table des symboles valués
+    map<string, TableSymboles>  m_table;    // La table des symboles valués des proc
     Noeud*                      m_arbre;    // L'arbre abstrait
-    map<string, Noeud*>              m_arbreproc;    // L'arbre abstrait
+    map<string, Noeud*>         m_arbreproc;    //sequence des proc
     int                         m_comptErr;
     string                      m_procActuelle = "";
-    map<string,vector<Noeud*>>  m_tableProcedure;   
-
+    map<string, vector<Noeud*>>  m_tableProcedure;   //sequence appel des proc + var
+    
     // Implémentation de la grammaire
     Noeud*  programme();   //   <programme> ::= procedure principale() <seqInst> finproc FIN_FICHIER
     Noeud*  seqInst();	   //     <seqInst> ::= <inst> { <inst> }

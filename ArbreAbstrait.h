@@ -180,14 +180,16 @@ class NoeudInstLire : public Noeud{
 class NoeudInstAppelProcedure : public Noeud{
     //"procedure"
     public :
-        NoeudInstAppelProcedure(vector<Noeud*> variables, Noeud* sequence);
+        NoeudInstAppelProcedure(vector<Noeud*> variables, vector<int> oldVariables, Noeud* sequence, string nom);
         ~NoeudInstAppelProcedure() {}
         int executer();
         void traduitEnPHP(ostream& cout, unsigned int indentation) const override;
 
     private:
         vector<Noeud*> m_vars;
+        vector<int> m_oldVars;
         Noeud* m_sequence;
+        string m_nom;
 };
 
 #endif /* ARBREABSTRAIT_H */

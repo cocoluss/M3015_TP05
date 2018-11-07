@@ -30,6 +30,14 @@ CND_ARTIFACT_PATH_Test_1=dist/Test_1/GNU-Linux/m3015_tp05
 CND_PACKAGE_DIR_Test_1=dist/Test_1/GNU-Linux/package
 CND_PACKAGE_NAME_Test_1=m3015tp05.tar
 CND_PACKAGE_PATH_Test_1=dist/Test_1/GNU-Linux/package/m3015tp05.tar
+# programme.txt configuration
+CND_PLATFORM_programme.txt=GNU-Linux
+CND_ARTIFACT_DIR_programme.txt=dist/programme.txt/GNU-Linux
+CND_ARTIFACT_NAME_programme.txt=m3015_tp05
+CND_ARTIFACT_PATH_programme.txt=dist/programme.txt/GNU-Linux/m3015_tp05
+CND_PACKAGE_DIR_programme.txt=dist/programme.txt/GNU-Linux/package
+CND_PACKAGE_NAME_programme.txt=m3015tp05.tar
+CND_PACKAGE_PATH_programme.txt=dist/programme.txt/GNU-Linux/package/m3015tp05.tar
 #
 # include compiler specific variables
 #
