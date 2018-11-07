@@ -131,6 +131,7 @@ Noeud* Interpreteur::expression() {
   // <expression> ::= <facteur> { <opBinaire> <facteur> }
   //  <opBinaire> ::= + | - | *  | / | < | > | <= | >= | == | != | et | ou
   Noeud* fact = facteur();
+  Noeud* factDroit;
   while ( m_lecteur.getSymbole() == "+"  || m_lecteur.getSymbole() == "-"  ||
           m_lecteur.getSymbole() == "*"  || m_lecteur.getSymbole() == "/"  ||
           m_lecteur.getSymbole() == "<"  || m_lecteur.getSymbole() == "<=" ||
@@ -138,8 +139,15 @@ Noeud* Interpreteur::expression() {
           m_lecteur.getSymbole() == "==" || m_lecteur.getSymbole() == "!=" ||
           m_lecteur.getSymbole() == "et" || m_lecteur.getSymbole() == "ou"   ) {
     Symbole operateur = m_lecteur.getSymbole(); // On mémorise le symbole de l'opérateur
-    m_lecteur.avancer();
-    Noeud* factDroit = facteur(); // On mémorise l'opérande droit
+    
+    //priorité des opérateur, on additione des expressions
+    if(m_lecteur.getSymbole() == "+"  || m_lecteur.getSymbole() == "-" || m_lecteur.getSymbole() == "ou"){
+        m_lecteur.avancer();
+        factDroit = expression(); // On mémorise l'opérande droit
+    }else{
+        m_lecteur.avancer();
+        factDroit = facteur(); // On mémorise l'opérande droit
+    }
     fact = new NoeudOperateurBinaire(operateur, fact, factDroit); // Et on construuit un noeud opérateur binaire
   }
   return fact; // On renvoie fact qui pointe sur la racine de l'expression
@@ -148,7 +156,7 @@ Noeud* Interpreteur::expression() {
 Noeud* Interpreteur::facteur() {
   // <facteur> ::= <entier> | <variable> | - <facteur> | non <facteur> | ( <expression> )
   Noeud* fact = nullptr;
-  if (m_lecteur.getSymbole() == "<VARIABLE>" || m_lecteur.getSymbole() == "<ENTIER>") {
+  if (m_lecteur.getSymbole() == "<VARIABLE>" || m_lecteur.getSymbole() == "<ENTIER>" || m_lecteur.getSymbole() == "<CHAINE>") {
     fact = m_table[m_procActuelle].chercheAjoute(m_lecteur.getSymbole()); // on ajoute la variable ou l'entier à la table
     m_lecteur.avancer();
   } else if (m_lecteur.getSymbole() == "-") { // - <facteur>

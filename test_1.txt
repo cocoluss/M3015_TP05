@@ -2,7 +2,14 @@
 # Les lignes de commentaires commencent par #
 procedure principale()
    #operateur
-    i = 2+1*2;
+    i = 3+5;
+    j = i;
+    j = 1;
+#   j = "je suis charlie";
+    si(i > 2 ou i > 1 et j == 1 ou j == 2) 
+        ecrire("oui")
+    finsi
+    ecrire("coucou")
     ecrire(i)
 finproc
 # Commentaire Final
