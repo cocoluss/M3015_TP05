@@ -13,7 +13,7 @@ finproc
 procedure principale()
     appel test1(5)
     j=4;
-    appel test2(j)
+    appel test2(7)
 finproc
 # Commentaire Final
 

@@ -26,8 +26,8 @@ void NoeudSeqInst::ajoute(Noeud* instruction) {
 
 void NoeudSeqInst::traduitEnPHP(ostream& cout, unsigned int indentation) const {
     for (unsigned int i = 0; i < m_instructions.size(); i++){
-
-        m_instructions[i]->traduitEnPHP(cout,indentation+2);
+        m_instructions[i]->traduitEnPHP(cout,indentation+2);  
+        cout << "\n";  
     }
 }
 
@@ -47,9 +47,16 @@ int NoeudAffectation::executer() {
 }
 
 void NoeudAffectation::traduitEnPHP(ostream& cout, unsigned int indentation) const {
+    string exp = "";
     cout<< setw(indentation) << "$" << ((SymboleValue*)m_variable)->getChaine() << " = ";
-    m_expression->traduitEnPHP(cout,0);
-    cout << ";\n";
+    if(*((SymboleValue*)m_expression) == "<VARIABLE>"){
+        exp = "$" + ((SymboleValue*)m_expression)->getChaine();
+    }else if(*((SymboleValue*)m_expression) == "<ENTIER>"){
+        exp = ((SymboleValue*)m_expression)->getChaine();
+    }else
+        m_expression->traduitEnPHP(cout,0);
+    cout << exp;
+    cout << ";";
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -62,8 +69,11 @@ NoeudOperateurBinaire::NoeudOperateurBinaire(Symbole operateur, Noeud* operandeG
 
 int NoeudOperateurBinaire::executer() {
   int og, od, valeur;
+  
   if (m_operandeGauche != nullptr) og = m_operandeGauche->executer(); // On évalue l'opérande gauche
   if (m_operandeDroit != nullptr) od = m_operandeDroit->executer(); // On évalue l'opérande droit
+
+  
   // Et on combine les deux opérandes en fonctions de l'opérateur
   if (this->m_operateur == "+") valeur = (og + od);
   else if (this->m_operateur == "-") valeur = (og - od);
@@ -88,7 +98,7 @@ void NoeudOperateurBinaire::traduitEnPHP(ostream& cout, unsigned int indentation
     string op1 = "";
     string op2 = "";
     string oper;
-    //operante gauche
+    //operante gauche///////////////////////////////////////////////////////////
     if(*((SymboleValue*)m_operandeGauche) == "<VARIABLE>"){
         op1 = "$" + ((SymboleValue*)m_operandeGauche)->getChaine();
 //    }else if(*((SymboleValue*)m_operandeGauche) == "<CHAINE>"){
@@ -105,13 +115,15 @@ void NoeudOperateurBinaire::traduitEnPHP(ostream& cout, unsigned int indentation
     }
     op1 = op1;
     cout << op1;
-    //operateur
-    if (this->m_operateur == "et") oper = "&&";
-    else if (this->m_operateur == "ou") oper = "||";
+    
+    //operateur/////////////////////////////////////////////////////////////////
+    if (this->m_operateur == "et") oper = " && ";
+    else if (this->m_operateur == "ou") oper = " || ";
     else if (this->m_operateur == "non") oper = "!";
     else oper = this->m_operateur.getChaine();
     cout << oper;
-    //operante droite
+    
+    //operante droite///////////////////////////////////////////////////////////
     if(*((SymboleValue*)m_operandeDroit) == "<VARIABLE>"){
         op2 = "$" + ((SymboleValue*)m_operandeDroit)->getChaine();
 //    }else if(*((SymboleValue*)m_operandeDroit) == "<CHAINE>"){
@@ -339,10 +351,6 @@ int NoeudInstEcrire::executer() {
 }
 
 void NoeudInstEcrire::traduitEnPHP(ostream& cout, unsigned int indentation) const {
-            
-    if (indentation > 4) {
-        cout << "\n";  
-    }
 
     cout << setw(indentation-1) << "" << "echo (";
     int n = 0;
