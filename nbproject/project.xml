@@ -24,7 +24,35 @@
                     <type>1</type>
                 </confElem>
                 <confElem>
-                    <name>programme.txt</name>
+                    <name>test_procedure</name>
+                    <type>1</type>
+                </confElem>
+                <confElem>
+                    <name>Test_Instances_tantque</name>
+                    <type>1</type>
+                </confElem>
+                <confElem>
+                    <name>test_operateur</name>
+                    <type>1</type>
+                </confElem>
+                <confElem>
+                    <name>Test_Erreur</name>
+                    <type>1</type>
+                </confElem>
+                <confElem>
+                    <name>_test_instance_si</name>
+                    <type>1</type>
+                </confElem>
+                <confElem>
+                    <name>_test_instance_repeter</name>
+                    <type>1</type>
+                </confElem>
+                <confElem>
+                    <name>_test_instance_pour</name>
+                    <type>1</type>
+                </confElem>
+                <confElem>
+                    <name>test_instance_lire_ecrire</name>
                     <type>1</type>
                 </confElem>
             </confList>

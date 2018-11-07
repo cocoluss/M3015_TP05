@@ -1,0 +1,31 @@
+# Fichier de test
+# Les lignes de commentaires commencent par #
+procedure principale()
+    i = 1;
+    j = 2;
+    
+    ecrire("Passe dans le si")
+    si(i==1)
+        ecrire("oui")
+    sinon
+        ecrire("non")
+    finsi
+
+    ecrire("Passe dans le sinon")
+    si(i !=1)
+        ecrire("non")
+    sinon
+        ecrire("oui")
+    finsi
+
+    ecrire("Passe dans le sinonsi")
+    si(i==2)
+        ecrire("non")
+    sinonsi(j>1)
+        ecrire("oui")
+    sinon
+        ecrire("non")
+    finsi
+
+finproc
+# Commentaire Final

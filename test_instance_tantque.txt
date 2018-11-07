@@ -1,0 +1,17 @@
+# Fichier de test
+# Les lignes de commentaires commencent par #
+procedure principale()
+    i = 1;
+    j = 2;
+    
+   
+    tantque(j < 11) 
+        j=j+1;
+        tantque(j < 11) 
+            j=j+1;
+        fintantque 
+    fintantque 
+
+
+finproc
+# Commentaire Final

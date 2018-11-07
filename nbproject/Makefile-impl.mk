@@ -31,7 +31,7 @@ DEFAULTCONF=Debug
 CONF=${DEFAULTCONF}
 
 # All Configurations
-ALLCONFS=Debug Release Test_1 programme.txt 
+ALLCONFS=Debug Release Test_1 test_procedure Test_Instances_tantque test_operateur Test_Erreur _test_instance_si _test_instance_repeter _test_instance_pour test_instance_lire_ecrire 
 
 
 # build

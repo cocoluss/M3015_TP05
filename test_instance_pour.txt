@@ -1,0 +1,22 @@
+# Fichier de test
+# Les lignes de commentaires commencent par #
+procedure principale()
+    i = 1;
+    j = 2;
+
+    pour(i=0;i>-10;) 
+        i = i -1;
+    finpour
+    
+    i = 0;
+    pour(;i<10;i = i+1) 
+        ecrire(i)
+    finpour
+
+    i = 0;
+    pour(;i>10;) 
+        i = i-1;
+    finpour
+
+finproc
+# Commentaire Final

@@ -1,0 +1,20 @@
+# Fichier de test
+# Les lignes de commentaires commencent par #
+procedure principale()
+   #operateur
+    i = 3+5;
+    j = i;
+    j = 1;
+    h = 1+2*3+4;
+    ecrire("h = 11; = ",h)
+
+    si(i > 2 ou i > 1 et j == 3 ou j == 2) 
+        ecrire("oui")
+    finsi
+
+    si(i > 2 ou i == 1 et j == 3 ou j == 2) 
+        ecrire("oui")
+    finsi
+
+finproc
+# Commentaire Final
