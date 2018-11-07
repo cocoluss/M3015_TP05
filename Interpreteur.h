@@ -55,6 +55,7 @@ private:
     Noeud*  instLire();
     Noeud*  instProcedure();
     Noeud*  instAppelProcedure();
+    
     // outils pour simplifier l'analyse syntaxique
     void tester (const string & symboleAttendu) const throw (SyntaxeException);   // Si symbole courant != symboleAttendu, on lève une exception
     void testerEtAvancer(const string & symboleAttendu) throw (SyntaxeException); // Si symbole courant != symboleAttendu, on lève une exception, sinon on avance
