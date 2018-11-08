@@ -41,6 +41,14 @@
                    displayName="Test Files"
                    projectFiles="false"
                    kind="TEST_LOGICAL_FOLDER">
+      <logicalFolder name="f2"
+                     displayName="test_interpreteur"
+                     projectFiles="true"
+                     kind="TEST">
+        <itemPath>tests/newtestclass2.cpp</itemPath>
+        <itemPath>tests/newtestclass2.h</itemPath>
+        <itemPath>tests/newtestrunner1.cpp</itemPath>
+      </logicalFolder>
     </logicalFolder>
     <logicalFolder name="ExternalFiles"
                    displayName="Important Files"
@@ -89,6 +97,20 @@
       </item>
       <item path="TableSymboles.h" ex="false" tool="3" flavor2="0">
       </item>
+      <folder path="TestFiles/f2">
+        <cTool>
+          <commandLine>`cppunit-config --cflags`</commandLine>
+        </cTool>
+        <ccTool>
+          <commandLine>`cppunit-config --cflags`</commandLine>
+        </ccTool>
+        <linkerTool>
+          <output>${TESTDIR}/TestFiles/f2</output>
+          <linkerLibItems>
+            <linkerOptionItem>`cppunit-config --libs`</linkerOptionItem>
+          </linkerLibItems>
+        </linkerTool>
+      </folder>
       <item path="main.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="motsCles.txt" ex="false" tool="3" flavor2="0">
@@ -110,6 +132,12 @@
       <item path="test_instance_tantque.txt" ex="false" tool="3" flavor2="0">
       </item>
       <item path="test_ipp_imm.txt" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="tests/newtestclass2.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="tests/newtestclass2.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="tests/newtestrunner1.cpp" ex="false" tool="1" flavor2="0">
       </item>
     </conf>
     <conf name="Release" type="1">
@@ -159,6 +187,20 @@
       </item>
       <item path="TableSymboles.h" ex="false" tool="3" flavor2="0">
       </item>
+      <folder path="TestFiles/f2">
+        <cTool>
+          <commandLine>`cppunit-config --cflags`</commandLine>
+        </cTool>
+        <ccTool>
+          <commandLine>`cppunit-config --cflags`</commandLine>
+        </ccTool>
+        <linkerTool>
+          <output>${TESTDIR}/TestFiles/f2</output>
+          <linkerLibItems>
+            <linkerOptionItem>`cppunit-config --libs`</linkerOptionItem>
+          </linkerLibItems>
+        </linkerTool>
+      </folder>
       <item path="main.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="motsCles.txt" ex="false" tool="3" flavor2="0">
@@ -180,6 +222,12 @@
       <item path="test_instance_tantque.txt" ex="false" tool="3" flavor2="0">
       </item>
       <item path="test_ipp_imm.txt" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="tests/newtestclass2.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="tests/newtestclass2.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="tests/newtestrunner1.cpp" ex="false" tool="1" flavor2="0">
       </item>
     </conf>
     <conf name="Test_ipp_imm" type="1">
@@ -216,6 +264,20 @@
       </item>
       <item path="TableSymboles.h" ex="false" tool="3" flavor2="0">
       </item>
+      <folder path="TestFiles/f2">
+        <cTool>
+          <commandLine>`cppunit-config --cflags`</commandLine>
+        </cTool>
+        <ccTool>
+          <commandLine>`cppunit-config --cflags`</commandLine>
+        </ccTool>
+        <linkerTool>
+          <output>${TESTDIR}/TestFiles/f2</output>
+          <linkerLibItems>
+            <linkerOptionItem>`cppunit-config --libs`</linkerOptionItem>
+          </linkerLibItems>
+        </linkerTool>
+      </folder>
       <item path="main.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="motsCles.txt" ex="false" tool="3" flavor2="0">
@@ -237,6 +299,12 @@
       <item path="test_instance_tantque.txt" ex="false" tool="3" flavor2="0">
       </item>
       <item path="test_ipp_imm.txt" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="tests/newtestclass2.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="tests/newtestclass2.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="tests/newtestrunner1.cpp" ex="false" tool="1" flavor2="0">
       </item>
     </conf>
     <conf name="test_procedure" type="1">
@@ -278,6 +346,20 @@
       </item>
       <item path="TableSymboles.h" ex="false" tool="3" flavor2="0">
       </item>
+      <folder path="TestFiles/f2">
+        <cTool>
+          <commandLine>`cppunit-config --cflags`</commandLine>
+        </cTool>
+        <ccTool>
+          <commandLine>`cppunit-config --cflags`</commandLine>
+        </ccTool>
+        <linkerTool>
+          <output>${TESTDIR}/TestFiles/f2</output>
+          <linkerLibItems>
+            <linkerOptionItem>`cppunit-config --libs`</linkerOptionItem>
+          </linkerLibItems>
+        </linkerTool>
+      </folder>
       <item path="main.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="motsCles.txt" ex="false" tool="3" flavor2="0">
@@ -299,6 +381,12 @@
       <item path="test_instance_tantque.txt" ex="false" tool="3" flavor2="0">
       </item>
       <item path="test_ipp_imm.txt" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="tests/newtestclass2.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="tests/newtestclass2.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="tests/newtestrunner1.cpp" ex="false" tool="1" flavor2="0">
       </item>
     </conf>
     <conf name="Test_Instances_tantque" type="1">
@@ -335,6 +423,20 @@
       </item>
       <item path="TableSymboles.h" ex="false" tool="3" flavor2="0">
       </item>
+      <folder path="TestFiles/f2">
+        <cTool>
+          <commandLine>`cppunit-config --cflags`</commandLine>
+        </cTool>
+        <ccTool>
+          <commandLine>`cppunit-config --cflags`</commandLine>
+        </ccTool>
+        <linkerTool>
+          <output>${TESTDIR}/TestFiles/f2</output>
+          <linkerLibItems>
+            <linkerOptionItem>`cppunit-config --libs`</linkerOptionItem>
+          </linkerLibItems>
+        </linkerTool>
+      </folder>
       <item path="main.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="motsCles.txt" ex="false" tool="3" flavor2="0">
@@ -356,6 +458,12 @@
       <item path="test_instance_tantque.txt" ex="false" tool="3" flavor2="0">
       </item>
       <item path="test_ipp_imm.txt" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="tests/newtestclass2.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="tests/newtestclass2.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="tests/newtestrunner1.cpp" ex="false" tool="1" flavor2="0">
       </item>
     </conf>
     <conf name="test_operateur" type="1">
@@ -392,6 +500,20 @@
       </item>
       <item path="TableSymboles.h" ex="false" tool="3" flavor2="0">
       </item>
+      <folder path="TestFiles/f2">
+        <cTool>
+          <commandLine>`cppunit-config --cflags`</commandLine>
+        </cTool>
+        <ccTool>
+          <commandLine>`cppunit-config --cflags`</commandLine>
+        </ccTool>
+        <linkerTool>
+          <output>${TESTDIR}/TestFiles/f2</output>
+          <linkerLibItems>
+            <linkerOptionItem>`cppunit-config --libs`</linkerOptionItem>
+          </linkerLibItems>
+        </linkerTool>
+      </folder>
       <item path="main.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="motsCles.txt" ex="false" tool="3" flavor2="0">
@@ -413,6 +535,12 @@
       <item path="test_instance_tantque.txt" ex="false" tool="3" flavor2="0">
       </item>
       <item path="test_ipp_imm.txt" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="tests/newtestclass2.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="tests/newtestclass2.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="tests/newtestrunner1.cpp" ex="false" tool="1" flavor2="0">
       </item>
     </conf>
     <conf name="Test_Erreur" type="1">
@@ -449,6 +577,20 @@
       </item>
       <item path="TableSymboles.h" ex="false" tool="3" flavor2="0">
       </item>
+      <folder path="TestFiles/f2">
+        <cTool>
+          <commandLine>`cppunit-config --cflags`</commandLine>
+        </cTool>
+        <ccTool>
+          <commandLine>`cppunit-config --cflags`</commandLine>
+        </ccTool>
+        <linkerTool>
+          <output>${TESTDIR}/TestFiles/f2</output>
+          <linkerLibItems>
+            <linkerOptionItem>`cppunit-config --libs`</linkerOptionItem>
+          </linkerLibItems>
+        </linkerTool>
+      </folder>
       <item path="main.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="motsCles.txt" ex="false" tool="3" flavor2="0">
@@ -470,6 +612,12 @@
       <item path="test_instance_tantque.txt" ex="false" tool="3" flavor2="0">
       </item>
       <item path="test_ipp_imm.txt" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="tests/newtestclass2.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="tests/newtestclass2.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="tests/newtestrunner1.cpp" ex="false" tool="1" flavor2="0">
       </item>
     </conf>
     <conf name="_test_instance_si" type="1">
@@ -506,6 +654,20 @@
       </item>
       <item path="TableSymboles.h" ex="false" tool="3" flavor2="0">
       </item>
+      <folder path="TestFiles/f2">
+        <cTool>
+          <commandLine>`cppunit-config --cflags`</commandLine>
+        </cTool>
+        <ccTool>
+          <commandLine>`cppunit-config --cflags`</commandLine>
+        </ccTool>
+        <linkerTool>
+          <output>${TESTDIR}/TestFiles/f2</output>
+          <linkerLibItems>
+            <linkerOptionItem>`cppunit-config --libs`</linkerOptionItem>
+          </linkerLibItems>
+        </linkerTool>
+      </folder>
       <item path="main.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="motsCles.txt" ex="false" tool="3" flavor2="0">
@@ -527,6 +689,12 @@
       <item path="test_instance_tantque.txt" ex="false" tool="3" flavor2="0">
       </item>
       <item path="test_ipp_imm.txt" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="tests/newtestclass2.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="tests/newtestclass2.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="tests/newtestrunner1.cpp" ex="false" tool="1" flavor2="0">
       </item>
     </conf>
     <conf name="_test_instance_repeter" type="1">
@@ -563,6 +731,20 @@
       </item>
       <item path="TableSymboles.h" ex="false" tool="3" flavor2="0">
       </item>
+      <folder path="TestFiles/f2">
+        <cTool>
+          <commandLine>`cppunit-config --cflags`</commandLine>
+        </cTool>
+        <ccTool>
+          <commandLine>`cppunit-config --cflags`</commandLine>
+        </ccTool>
+        <linkerTool>
+          <output>${TESTDIR}/TestFiles/f2</output>
+          <linkerLibItems>
+            <linkerOptionItem>`cppunit-config --libs`</linkerOptionItem>
+          </linkerLibItems>
+        </linkerTool>
+      </folder>
       <item path="main.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="motsCles.txt" ex="false" tool="3" flavor2="0">
@@ -584,6 +766,12 @@
       <item path="test_instance_tantque.txt" ex="false" tool="3" flavor2="0">
       </item>
       <item path="test_ipp_imm.txt" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="tests/newtestclass2.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="tests/newtestclass2.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="tests/newtestrunner1.cpp" ex="false" tool="1" flavor2="0">
       </item>
     </conf>
     <conf name="_test_instance_pour" type="1">
@@ -620,6 +808,20 @@
       </item>
       <item path="TableSymboles.h" ex="false" tool="3" flavor2="0">
       </item>
+      <folder path="TestFiles/f2">
+        <cTool>
+          <commandLine>`cppunit-config --cflags`</commandLine>
+        </cTool>
+        <ccTool>
+          <commandLine>`cppunit-config --cflags`</commandLine>
+        </ccTool>
+        <linkerTool>
+          <output>${TESTDIR}/TestFiles/f2</output>
+          <linkerLibItems>
+            <linkerOptionItem>`cppunit-config --libs`</linkerOptionItem>
+          </linkerLibItems>
+        </linkerTool>
+      </folder>
       <item path="main.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="motsCles.txt" ex="false" tool="3" flavor2="0">
@@ -641,6 +843,12 @@
       <item path="test_instance_tantque.txt" ex="false" tool="3" flavor2="0">
       </item>
       <item path="test_ipp_imm.txt" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="tests/newtestclass2.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="tests/newtestclass2.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="tests/newtestrunner1.cpp" ex="false" tool="1" flavor2="0">
       </item>
     </conf>
     <conf name="test_instance_lire_ecrire" type="1">
@@ -677,6 +885,20 @@
       </item>
       <item path="TableSymboles.h" ex="false" tool="3" flavor2="0">
       </item>
+      <folder path="TestFiles/f2">
+        <cTool>
+          <commandLine>`cppunit-config --cflags`</commandLine>
+        </cTool>
+        <ccTool>
+          <commandLine>`cppunit-config --cflags`</commandLine>
+        </ccTool>
+        <linkerTool>
+          <output>${TESTDIR}/TestFiles/f2</output>
+          <linkerLibItems>
+            <linkerOptionItem>`cppunit-config --libs`</linkerOptionItem>
+          </linkerLibItems>
+        </linkerTool>
+      </folder>
       <item path="main.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="motsCles.txt" ex="false" tool="3" flavor2="0">
@@ -698,6 +920,12 @@
       <item path="test_instance_tantque.txt" ex="false" tool="3" flavor2="0">
       </item>
       <item path="test_ipp_imm.txt" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="tests/newtestclass2.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="tests/newtestclass2.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="tests/newtestrunner1.cpp" ex="false" tool="1" flavor2="0">
       </item>
     </conf>
   </confs>
