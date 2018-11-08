@@ -5,7 +5,7 @@
 #
 # Debug configuration
 # Release configuration
-# Test_1 configuration
+# Test_ipp_imm configuration
 # test_procedure configuration
 # Test_Instances_tantque configuration
 # test_operateur configuration

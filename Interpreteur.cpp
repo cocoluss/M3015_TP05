@@ -119,13 +119,17 @@ Noeud* Interpreteur::affectation() {
   tester("<VARIABLE>");
   Noeud* var = m_table[m_procActuelle].chercheAjoute(m_lecteur.getSymbole()); // La variable est ajoutée à la table eton la mémorise
   m_lecteur.avancer();
-  if(m_lecteur.getSymbole() == "++" || m_lecteur.getSymbole() == "--"){
-      Noeud* exp = expression(); 
+  if(m_lecteur.getSymbole() == "++"){
+      m_lecteur.avancer();
+      return new NoeudInstIncrementation(var);
+  }else if(m_lecteur.getSymbole() == "--"){
+      m_lecteur.avancer();
+      return new NoeudInstDecrementation(var);
   }else{      
       testerEtAvancer("=");
       Noeud* exp = expression();             // On mémorise l'expression trouvée
+      return new NoeudAffectation(var, exp); // On renvoie un noeud affectation
   }
-  return new NoeudAffectation(var, exp); // On renvoie un noeud affectation
 }
 
 Noeud* Interpreteur::expression() {

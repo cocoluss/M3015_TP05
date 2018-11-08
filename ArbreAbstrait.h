@@ -191,5 +191,26 @@ class NoeudInstAppelProcedure : public Noeud{
         Noeud* m_sequence;
         string m_nom;
 };
+////////////////////////////////////////////////////////////////////////////////
+class NoeudInstIncrementation : public Noeud{
+    public:
+        NoeudInstIncrementation(Noeud* var);
+        ~NoeudInstIncrementation() {}
+        int executer();
+        void traduitEnPHP(ostream& cout, unsigned int indentation) const override;
 
+    private:
+        Noeud* m_variable;
+};
+////////////////////////////////////////////////////////////////////////////////
+class NoeudInstDecrementation : public Noeud{
+    public:
+        NoeudInstDecrementation(Noeud* var);
+        ~NoeudInstDecrementation() {}
+        int executer();
+        void traduitEnPHP(ostream& cout, unsigned int indentation) const override;
+
+    private:
+        Noeud* m_variable;
+};
 #endif /* ARBREABSTRAIT_H */

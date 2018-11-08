@@ -23,7 +23,7 @@ AS=as
 # Macros
 CND_PLATFORM=GNU-Linux
 CND_DLIB_EXT=so
-CND_CONF=Test_1
+CND_CONF=Test_ipp_imm
 CND_DISTDIR=dist
 CND_BUILDDIR=build
 

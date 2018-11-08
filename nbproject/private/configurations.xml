@@ -71,7 +71,7 @@
         </environment>
       </runprofile>
     </conf>
-    <conf name="Test_1" type="1">
+    <conf name="Test_ipp_imm" type="1">
       <toolsSet>
         <developmentServer>localhost</developmentServer>
         <platform>2</platform>
@@ -96,8 +96,9 @@
           <runcommandpicklistitem>"${OUTPUT_PATH}"</runcommandpicklistitem>
           <runcommandpicklistitem>"${OUTPUT_PATH}" test_1</runcommandpicklistitem>
           <runcommandpicklistitem>"${OUTPUT_PATH}" test_1.txt</runcommandpicklistitem>
+          <runcommandpicklistitem>"${OUTPUT_PATH}" test_ipp_imm.txt</runcommandpicklistitem>
         </runcommandpicklist>
-        <runcommand>"${OUTPUT_PATH}" test_1.txt</runcommand>
+        <runcommand>"${OUTPUT_PATH}" test_ipp_imm.txt</runcommand>
         <rundir></rundir>
         <buildfirst>true</buildfirst>
         <terminal-type>0</terminal-type>

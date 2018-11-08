@@ -1,0 +1,12 @@
+# Fichier de test
+# Les lignes de commentaires commencent par #
+procedure principale()
+    i = 3+5;
+    ecrire("i = ",i)
+    i++;
+    ecrire("i = ",i)
+    i--;
+    ecrire("i = ",i)
+
+finproc
+# Commentaire Final

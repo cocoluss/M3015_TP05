@@ -426,6 +426,32 @@ void NoeudInstAppelProcedure::traduitEnPHP(ostream& cout, unsigned int indentati
     cout << ");"; 
 }
 
+////////////////////////////////////////////////////////////////////////////////
+
+NoeudInstIncrementation::NoeudInstIncrementation(Noeud* var): m_variable(var) {
+}
+
+int NoeudInstIncrementation::executer() {
+    ((SymboleValue*)m_variable)->setValeur(m_variable->executer()+1);
+}
+
+void NoeudInstIncrementation::traduitEnPHP(ostream& cout, unsigned int indentation) const {
+    cout << setw(indentation) << "$" << ((SymboleValue*)m_variable)->getChaine() << "++" << ";";
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
+NoeudInstDecrementation::NoeudInstDecrementation(Noeud* var): m_variable(var) {}
+
+int NoeudInstDecrementation::executer() {
+    ((SymboleValue*)m_variable)->setValeur(m_variable->executer()-1);
+}
+
+void NoeudInstDecrementation::traduitEnPHP(ostream& cout, unsigned int indentation) const {
+    cout << setw(indentation)<< "$" << ((SymboleValue*)m_variable)->getChaine() << "--" << ";";
+}
+
+
 void Noeud::traduitEnPHP(ostream& cout, unsigned int indentation) const {
 
 }

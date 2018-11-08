@@ -22,14 +22,14 @@ CND_ARTIFACT_PATH_Release=dist/Release/GNU-Linux/m3015_tp05
 CND_PACKAGE_DIR_Release=dist/Release/GNU-Linux/package
 CND_PACKAGE_NAME_Release=m3015tp05.tar
 CND_PACKAGE_PATH_Release=dist/Release/GNU-Linux/package/m3015tp05.tar
-# Test_1 configuration
-CND_PLATFORM_Test_1=GNU-Linux
-CND_ARTIFACT_DIR_Test_1=dist/Test_1/GNU-Linux
-CND_ARTIFACT_NAME_Test_1=m3015_tp05
-CND_ARTIFACT_PATH_Test_1=dist/Test_1/GNU-Linux/m3015_tp05
-CND_PACKAGE_DIR_Test_1=dist/Test_1/GNU-Linux/package
-CND_PACKAGE_NAME_Test_1=m3015tp05.tar
-CND_PACKAGE_PATH_Test_1=dist/Test_1/GNU-Linux/package/m3015tp05.tar
+# Test_ipp_imm configuration
+CND_PLATFORM_Test_ipp_imm=GNU-Linux
+CND_ARTIFACT_DIR_Test_ipp_imm=dist/Test_ipp_imm/GNU-Linux
+CND_ARTIFACT_NAME_Test_ipp_imm=m3015_tp05
+CND_ARTIFACT_PATH_Test_ipp_imm=dist/Test_ipp_imm/GNU-Linux/m3015_tp05
+CND_PACKAGE_DIR_Test_ipp_imm=dist/Test_ipp_imm/GNU-Linux/package
+CND_PACKAGE_NAME_Test_ipp_imm=m3015tp05.tar
+CND_PACKAGE_PATH_Test_ipp_imm=dist/Test_ipp_imm/GNU-Linux/package/m3015tp05.tar
 # test_procedure configuration
 CND_PLATFORM_test_procedure=GNU-Linux
 CND_ARTIFACT_DIR_test_procedure=dist/test_procedure/GNU-Linux
