@@ -18,7 +18,12 @@ void Interpreteur::analyse() {
 void Interpreteur::analyseproc() {
     Noeud* sequence;
     do{
-        sequence = instProcedure();
+        if (m_lecteur.getSymbole() == "procedure") {
+            sequence = instProcedure();
+        }
+        else if (m_lecteur.getSymbole() == "fonction") {
+            sequence = instFonction();
+        }
         if (sequence != nullptr) {
             m_arbreproc[m_procActuelle] = sequence;
         }
@@ -426,10 +431,93 @@ Noeud* Interpreteur::instAppelProcedure() {
     }
 }
 
+
+Noeud* Interpreteur::instFonction() {
+  //<instFonction> ::= fonction  <chaine>(<variable>{,<variable>}) <seqInst> finfonc
+    vector<Noeud*> fonction;
+    Noeud* sequence;
+    string nomFonction;
+    testerEtAvancer("fonction");
+
+    nomFonction = m_lecteur.getSymbole().getChaine();
+    m_procActuelle = nomFonction;
+    m_lecteur.avancer();
+    testerEtAvancer("(");
+    while(m_lecteur.getSymbole() == "<VARIABLE>"){
+        TRY(fonction.push_back(expression());)
+        if(m_lecteur.getSymbole().getChaine() == ",") {
+            m_lecteur.avancer();
+        }
+    }
+    testerEtAvancer(")");
+    sequence = seqInst();
+    fonction.push_back(sequence);
+    testerEtAvancer("finfonc");
+    if(m_comptErr > 0){
+        cout << "Nombre d'erreur trouvé : "<< m_comptErr << endl;
+    }
+    else {
+        m_tableProcedure[nomFonction] = fonction;
+    }
+    return sequence;
+}
+
+Noeud* Interpreteur::instAppelFonction() {
+  //<instAppelFonction> ::= appel <chaine>(<variable>{,<variable>})
+    TRY(testerEtAvancer("appel");)
+    for(auto nom : m_tableProcedure){
+        if (nom.first == m_lecteur.getSymbole().getChaine()) {
+            string nomFonc = m_procActuelle;
+            vector<Noeud*> variables;
+            vector<string> oldVariables;
+            Noeud* sequence;
+            
+            setProcActuelle(nom.first);
+            m_lecteur.avancer();
+            
+            testerEtAvancer("(");
+            int i = 0;
+            for(auto elem : nom.second){
+                
+                if(m_lecteur.getSymbole().getChaine() == ",") {
+                    m_lecteur.avancer();
+                }
+            
+                if(m_lecteur.getSymbole() == "<ENTIER>"){
+                    int val = stoi(m_lecteur.getSymbole().getChaine());
+                    oldVariables.push_back(m_lecteur.getSymbole().getChaine());
+                    m_lecteur.avancer();
+                    ((SymboleValue*)elem)->setValeur(val);
+                    variables.push_back(elem);
+                }
+            
+                else if(m_lecteur.getSymbole() == "<VARIABLE>"){
+                    //affichage php
+                    oldVariables.push_back(("$"+m_lecteur.getSymbole().getChaine()));
+                    //on recupere la variable
+                    Noeud* var1 = m_tableProcedure[m_procActuelle][i];
+                    setProcActuelle(nomFonc);
+                    Noeud* exp = expression();
+                    variables.push_back(new NoeudAffectation(var1,exp));
+                    setProcActuelle(nom.first);
+                }
+                
+                else sequence = elem;
+                i++;
+            }
+            
+            testerEtAvancer(")");
+            
+            setProcActuelle(nomFonc);
+            return new NoeudInstAppelProcedure(variables,oldVariables,sequence,nom.first);
+        }
+    }
+}
+
 void Interpreteur::traduitEnPHP(ostream& cout, unsigned int indentation) const {
     cout << setw(4*indentation) << "" << "<?php" << "\n"; //debut du programme php
     if(getArbreproc().size() > 0)
-    cout << "//Declaration des fonctions\n";
+    cout << "//Declaration des fonctions et procédures\n";
     for(auto proc : getArbreproc()){
             cout << setw(indentation+2) << "" << "function " << proc.first << "(";
             vector<Noeud*> variables = getTableProcedure()[proc.first];
