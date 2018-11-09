@@ -411,7 +411,6 @@ int NoeudInstAppelProcedure::executer() {
         }
     }
     m_sequence->executer();
-
 }
 
 void NoeudInstAppelProcedure::traduitEnPHP(ostream& cout, unsigned int indentation) const {

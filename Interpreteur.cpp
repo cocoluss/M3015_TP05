@@ -21,6 +21,9 @@ void Interpreteur::analyseproc() {
         if (m_lecteur.getSymbole() == "procedure") {
             sequence = instProcedure();
         }
+        else if (m_lecteur.getSymbole() == "fonction") {
+            sequence = instFonction();
+        }
         if (sequence != nullptr) {
             m_arbreproc[m_procActuelle] = sequence;
         }
@@ -167,7 +170,7 @@ Noeud* Interpreteur::facteur() {
     fact = m_table[m_procActuelle].chercheAjoute(m_lecteur.getSymbole()); // on ajoute la variable ou l'entier à la table
     m_lecteur.avancer();
   } else if(m_lecteur.getSymbole() == "appel" ){
-      fact = instAppelProcedure();
+      fact = instAppelFonction();
   } else if (m_lecteur.getSymbole() == "-") { // - <facteur>
     m_lecteur.avancer();
     // on représente le moins unaire (- facteur) par une soustraction binaire (0 - facteur)
@@ -514,9 +517,9 @@ Noeud* Interpreteur::instAppelFonction() {
                 else sequence = elem;
                 i++;
             }
-            Noeud* varReturn = m_tableProcReturn[m_procActuelle];
             testerEtAvancer(")");
             
+            Noeud* varReturn = m_tableProcReturn[m_procActuelle];
             setProcActuelle(nomProc);
             return new NoeudInstAppelFonction(variables,oldVariables,sequence,varReturn,nom.first);
         }

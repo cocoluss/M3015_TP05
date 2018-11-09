@@ -1,0 +1,28 @@
+# Fichier de test
+# Les lignes de commentaires commencent par #
+procedure principale()
+    j=4;
+    o=8;
+    k = j+o; 
+    i = 0;
+    
+    repeter 
+        i++; 
+    jusqua(i < 200)
+
+    d = 0;
+
+    si(i==1)
+        d = 20;
+    sinon
+        d = 1;
+    finsi
+
+    b = 0;
+
+    tantque(b < 11) 
+        b++;
+    fintantque 
+
+finproc
+# Commentaire Final
