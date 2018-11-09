@@ -345,7 +345,6 @@ Noeud* Interpreteur::instLire() {
     TRY(testerEtAvancer(")");)  
     return new NoeudInstLire(variables);
 }
-
 Noeud* Interpreteur::instProcedure() {
   //<instProcedure> ::= procedure  <chaine>(<variable>{,<variable>}) <seqInst> finproc
     vector<Noeud*> procedure;
@@ -366,20 +365,12 @@ Noeud* Interpreteur::instProcedure() {
         testerEtAvancer(")");
         sequence = seqInst();
         procedure.push_back(sequence);
-        //return
-        Noeud* varReturn = nullptr; 
-        if(m_lecteur.getSymbole() == "return"){
-            m_lecteur.avancer();
-            varReturn = expression();
-            TRY(testerEtAvancer(";");)
-        }
         testerEtAvancer("finproc");
         if(m_comptErr > 0){
             cout << "Nombre d'erreur trouvé : "<< m_comptErr << endl;
         }
         else {
             m_tableProcedure[nomProcedure] = procedure;
-            m_tableProcReturn[nomProcedure] = varReturn;
         }
         return sequence;
     }
@@ -431,11 +422,103 @@ Noeud* Interpreteur::instAppelProcedure() {
                 else sequence = elem;
                 i++;
             }
+            testerEtAvancer(")");
+            
+            setProcActuelle(nomProc);
+            return new NoeudInstAppelProcedure(variables,oldVariables,sequence,nom.first);
+        }
+    }
+}
+
+Noeud* Interpreteur::instFonction() {
+  //<instProcedure> ::= procedure  <chaine>(<variable>{,<variable>}) <seqInst> finproc
+    vector<Noeud*> procedure;
+    Noeud* sequence;
+    string nomProcedure;
+    testerEtAvancer("fonction");
+    if (m_lecteur.getSymbole() != "principale") {
+        nomProcedure = m_lecteur.getSymbole().getChaine();
+        m_procActuelle = nomProcedure;
+        m_lecteur.avancer();
+        testerEtAvancer("(");
+        while(m_lecteur.getSymbole() == "<VARIABLE>"){
+            TRY(procedure.push_back(expression());)
+            if(m_lecteur.getSymbole().getChaine() == ",") {
+                    m_lecteur.avancer();
+            }
+        }
+        testerEtAvancer(")");
+        sequence = seqInst();
+        procedure.push_back(sequence);
+        //return
+        TRY(testerEtAvancer("return");)
+        Noeud* varReturn = expression();
+        TRY(testerEtAvancer(";");)
+        testerEtAvancer("finproc");
+        if(m_comptErr > 0){
+            cout << "Nombre d'erreur trouvé : "<< m_comptErr << endl;
+        }
+        else {
+            m_tableProcedure[nomProcedure] = procedure;
+            m_tableProcReturn[nomProcedure] = varReturn;
+        }
+        return sequence;
+    }
+    else return nullptr;
+}
+
+
+
+Noeud* Interpreteur::instAppelFonction() {
+  //<instAppelProcedure> ::= appel <chaine>(<variable>{,<variable>})
+    TRY(testerEtAvancer("appel");)
+    for(auto nom : m_tableProcedure){
+        if (nom.first == m_lecteur.getSymbole().getChaine()) {
+            string nomProc = m_procActuelle;
+            vector<Noeud*> variables;
+            vector<string> oldVariables;
+            Noeud* sequence;
+            
+            setProcActuelle(nom.first);
+            m_lecteur.avancer();
+            
+            testerEtAvancer("(");
+            int i = 0;
+            for(auto elem : nom.second){
+                
+                if(m_lecteur.getSymbole().getChaine() == ",") {
+                    m_lecteur.avancer();
+                }
+            
+                if(m_lecteur.getSymbole() == "<ENTIER>"){
+                    int val = stoi(m_lecteur.getSymbole().getChaine());
+                    oldVariables.push_back(m_lecteur.getSymbole().getChaine());
+                    Noeud* var1 = m_tableProcedure[m_procActuelle][i];
+                    setProcActuelle(nomProc);
+                    Noeud* exp = expression();
+                    variables.push_back(new NoeudAffectation(var1,exp));
+                    setProcActuelle(nom.first);
+                }
+            
+                else if(m_lecteur.getSymbole() == "<VARIABLE>"){
+                    //affichage php
+                    oldVariables.push_back(("$"+m_lecteur.getSymbole().getChaine()));
+                    //on recupere la variable
+                    Noeud* var1 = m_tableProcedure[m_procActuelle][i];
+                    setProcActuelle(nomProc);
+                    Noeud* exp = expression();
+                    variables.push_back(new NoeudAffectation(var1,exp));
+                    setProcActuelle(nom.first);
+                }
+                
+                else sequence = elem;
+                i++;
+            }
             Noeud* varReturn = m_tableProcReturn[m_procActuelle];
             testerEtAvancer(")");
             
             setProcActuelle(nomProc);
-            return new NoeudInstAppelProcedure(variables,oldVariables,sequence,varReturn,nom.first);
+            return new NoeudInstAppelFonction(variables,oldVariables,sequence,varReturn,nom.first);
         }
     }
 }

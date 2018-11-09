@@ -180,7 +180,7 @@ class NoeudInstLire : public Noeud{
 class NoeudInstAppelProcedure : public Noeud{
     //"procedure"
     public :
-        NoeudInstAppelProcedure(vector<Noeud*> variables, vector<string> oldVariables, Noeud* sequence, Noeud* varReturn, string nom);
+        NoeudInstAppelProcedure(vector<Noeud*> variables, vector<string> oldVariables, Noeud* sequence, string nom);
         ~NoeudInstAppelProcedure() {}
         int executer();
         void traduitEnPHP(ostream& cout, unsigned int indentation) const override;
@@ -189,7 +189,6 @@ class NoeudInstAppelProcedure : public Noeud{
         vector<Noeud*> m_vars;
         vector<string> m_oldVars;
         Noeud* m_sequence;
-        Noeud* m_varReturn;
         string m_nom;
 };
 
@@ -197,7 +196,7 @@ class NoeudInstAppelProcedure : public Noeud{
 class NoeudInstAppelFonction : public Noeud{
     //"procedure"
     public :
-        NoeudInstAppelFonction(vector<Noeud*> variables, vector<string> oldVariables, Noeud* sequence, string nom);
+        NoeudInstAppelFonction(vector<Noeud*> variables, vector<string> oldVariables, Noeud* sequence, Noeud* varReturn, string nom);
         ~NoeudInstAppelFonction() {}
         int executer();
         void traduitEnPHP(ostream& cout, unsigned int indentation) const override;
@@ -206,6 +205,7 @@ class NoeudInstAppelFonction : public Noeud{
         vector<Noeud*> m_vars;
         vector<string> m_oldVars;
         Noeud* m_sequence;
+        Noeud* m_varReturn;
         string m_nom;
 };
 
