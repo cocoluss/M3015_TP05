@@ -398,10 +398,8 @@ void NoeudInstLire::traduitEnPHP(ostream& cout, unsigned int indentation) const 
     }
 }
 
-////////////////////////////////////////////////////////////////////////////////
-
-NoeudInstAppelProcedure::NoeudInstAppelProcedure(vector<Noeud*> variables, vector<string> oldVariables, Noeud* sequence, string nom)
-: m_vars(variables), m_sequence(sequence), m_nom(nom), m_oldVars(oldVariables){
+NoeudInstAppelProcedure::NoeudInstAppelProcedure(vector<Noeud*> variables, vector<string> oldVariables, Noeud* sequence, Noeud* varReturn, string nom)
+: m_vars(variables), m_sequence(sequence), m_nom(nom), m_oldVars(oldVariables), m_varReturn(varReturn){
 }
 
 int NoeudInstAppelProcedure::executer() {
@@ -411,6 +409,8 @@ int NoeudInstAppelProcedure::executer() {
         }
     }
     m_sequence->executer();
+    if(m_varReturn != nullptr)
+        return m_varReturn->executer();
 }
 
 void NoeudInstAppelProcedure::traduitEnPHP(ostream& cout, unsigned int indentation) const {
