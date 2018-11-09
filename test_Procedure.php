@@ -1,5 +1,5 @@
 <?php
-//Declaration des fonctions
+//Declaration des fonctions et procédures
   function test1($i, $h){
      echo ("i = " . $i);
      echo ("h = " . $h);

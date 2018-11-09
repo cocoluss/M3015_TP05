@@ -55,6 +55,8 @@ private:
     Noeud*  instLire();
     Noeud*  instProcedure();
     Noeud*  instAppelProcedure();
+    Noeud*  instFonction();
+    Noeud*  instAppelFonction();
     
     // outils pour simplifier l'analyse syntaxique
     void tester (const string & symboleAttendu) const throw (SyntaxeException);   // Si symbole courant != symboleAttendu, on lève une exception

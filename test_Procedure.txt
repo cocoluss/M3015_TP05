@@ -5,11 +5,11 @@ procedure test1(i,h)
     ecrire("h = ", h)
 finproc
 
-procedure test2(j)
+fonction test2(j)
     ecrire("j = ", j)
     lire(j)
     ecrire("j = ", j)
-finproc
+finfonc
 
 procedure principale()
     appel test1(5,6)

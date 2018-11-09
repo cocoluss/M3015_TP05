@@ -191,6 +191,23 @@ class NoeudInstAppelProcedure : public Noeud{
         Noeud* m_sequence;
         string m_nom;
 };
+
+////////////////////////////////////////////////////////////////////////////////
+class NoeudInstAppelFonction : public Noeud{
+    //"procedure"
+    public :
+        NoeudInstAppelFonction(vector<Noeud*> variables, vector<string> oldVariables, Noeud* sequence, string nom);
+        ~NoeudInstAppelFonction() {}
+        int executer();
+        void traduitEnPHP(ostream& cout, unsigned int indentation) const override;
+
+    private:
+        vector<Noeud*> m_vars;
+        vector<string> m_oldVars;
+        Noeud* m_sequence;
+        string m_nom;
+};
+
 ////////////////////////////////////////////////////////////////////////////////
 class NoeudInstIncrementation : public Noeud{
     public:
@@ -202,6 +219,7 @@ class NoeudInstIncrementation : public Noeud{
     private:
         Noeud* m_variable;
 };
+
 ////////////////////////////////////////////////////////////////////////////////
 class NoeudInstDecrementation : public Noeud{
     public:

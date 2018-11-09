@@ -5,7 +5,7 @@
 #include "SymboleValue.h"
 #include "Exceptions.h"
 #include "TableSymboles.h"
-    
+
 ////////////////////////////////////////////////////////////////////////////////
 // NoeudSeqInst
 ////////////////////////////////////////////////////////////////////////////////
@@ -398,6 +398,8 @@ void NoeudInstLire::traduitEnPHP(ostream& cout, unsigned int indentation) const 
     }
 }
 
+////////////////////////////////////////////////////////////////////////////////
+
 NoeudInstAppelProcedure::NoeudInstAppelProcedure(vector<Noeud*> variables, vector<string> oldVariables, Noeud* sequence, string nom)
 : m_vars(variables), m_sequence(sequence), m_nom(nom), m_oldVars(oldVariables){
 }
@@ -412,6 +414,37 @@ int NoeudInstAppelProcedure::executer() {
 }
 
 void NoeudInstAppelProcedure::traduitEnPHP(ostream& cout, unsigned int indentation) const {
+    string exp = "";
+    cout << setw(indentation-1) << "" << m_nom << "(";
+    int i = m_oldVars.size();
+    for(auto var : m_oldVars) {
+        
+        cout << var;
+        if (i > 1) {
+            cout << ", ";
+        }
+        i--;
+    }
+    cout << ");"; 
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
+
+NoeudInstAppelFonction::NoeudInstAppelFonction(vector<Noeud*> variables, vector<string> oldVariables, Noeud* sequence, string nom)
+: m_vars(variables), m_sequence(sequence), m_nom(nom), m_oldVars(oldVariables){
+}
+
+int NoeudInstAppelFonction::executer() {
+    if (!m_vars.empty()) {
+        for(auto var : m_vars){
+            var->executer();
+        }
+    }
+    m_sequence->executer();
+}
+
+void NoeudInstAppelFonction::traduitEnPHP(ostream& cout, unsigned int indentation) const {
     string exp = "";
     cout << setw(indentation-1) << "" << m_nom << "(";
     int i = m_oldVars.size();

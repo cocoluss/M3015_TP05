@@ -1,7 +1,9 @@
 appel
+fonction
 procedure
 principale
 finproc
+finfonc
 pour
 finpour
 si
