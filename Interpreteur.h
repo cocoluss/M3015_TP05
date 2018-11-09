@@ -37,6 +37,7 @@ private:
     int                         m_comptErr;
     string                      m_procActuelle = "";
     map<string, vector<Noeud*>>  m_tableProcedure;   //sequence appel des proc + var
+    map<string, Noeud*>  m_tableProcReturn;   //sequence appel des proc + var
     
     // Implémentation de la grammaire
     Noeud*  programme();   //   <programme> ::= procedure principale() <seqInst> finproc FIN_FICHIER

@@ -1,21 +1,29 @@
 # Fichier de test
 # Les lignes de commentaires commencent par #
 procedure test1(i,h)
+    ecrire("appel procedure test1")
     ecrire("i = ", i)
     ecrire("h = ", h)
 finproc
 
 procedure test2(j)
-    ecrire("j = ", j)
-    lire(j)
-    ecrire("j = ", j)
+    ecrire("appel procedure test2 (return j)")
+    j++;
+    ecrire("j = ",j)
+    return j;
 finproc
 
 procedure principale()
     appel test1(5,6)
     j=4;
     oooo=888;
-    appel test2(j)
     appel test1(oooo,j)
+    ecrire("o = appel test2(1);")
+    o = appel test2(1);
+    appel test2(5)
+    ecrire("o = ",o)
+    ecrire("o = appel test2(7+9);")
+    o = appel test2(7+9);
+    ecrire("o = ",o)
 finproc
 # Commentaire Final

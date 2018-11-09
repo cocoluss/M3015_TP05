@@ -180,7 +180,7 @@ class NoeudInstLire : public Noeud{
 class NoeudInstAppelProcedure : public Noeud{
     //"procedure"
     public :
-        NoeudInstAppelProcedure(vector<Noeud*> variables, vector<string> oldVariables, Noeud* sequence, string nom);
+        NoeudInstAppelProcedure(vector<Noeud*> variables, vector<string> oldVariables, Noeud* sequence, Noeud* varReturn, string nom);
         ~NoeudInstAppelProcedure() {}
         int executer();
         void traduitEnPHP(ostream& cout, unsigned int indentation) const override;
@@ -189,6 +189,7 @@ class NoeudInstAppelProcedure : public Noeud{
         vector<Noeud*> m_vars;
         vector<string> m_oldVars;
         Noeud* m_sequence;
+        Noeud* m_varReturn;
         string m_nom;
 };
 ////////////////////////////////////////////////////////////////////////////////
